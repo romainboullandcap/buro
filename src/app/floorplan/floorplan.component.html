@@ -1,0 +1,63 @@
+<div class="main">
+  <div class="legend">
+    <ul>
+      <li>
+        <div class="square secondary-color-bg"></div>
+        <div class="desc">Disponible</div>
+      </li>
+      <li>
+        <div class="square accent-color-bg"></div>
+        <div class="desc">Réservé pour moi</div>
+      </li>
+      <li>
+        <div class="square error-color-bg"></div>
+        <div class="desc">Réservé</div>
+      </li>
+    </ul>
+    <mat-slide-toggle
+      class="m1"
+      [(ngModel)]="showText"
+      (change)="onShowTextChange()"
+    >
+      Afficher numéro
+    </mat-slide-toggle>
+  </div>
+  <div class="detail">
+    <app-desktop-detail
+      [selectedDate]="selectedDate()"
+      (onDeleteDetail)="onDeleteFromDetail()"
+    ></app-desktop-detail>
+  </div>
+  <div class="floorplan">
+    <img id="floorplan_img" src="assets/plan.png" />
+    <svg id="svg" width="1000" height="347" xmlns="http://www.w3.org/2000/svg">
+      <g>
+        <title>Plan du site</title>
+        @for (desktop of desktopList(); track desktop.id) {
+        <rect
+          class="rotate"
+          (click)="onDeskClick(desktop)"
+          [id]="desktop.id"
+          height="28"
+          width="19"
+          [attr.y]="desktop.yCoord"
+          [attr.x]="desktop.xCoord"
+          [attr.stroke]="getStrokeColor(desktop)"
+          [attr.fill]="getFillColor(desktop)"
+          stroke-width="1"
+          [style.transform]="'rotate(' + desktop.angle + 'deg)'"
+          label="Détails"
+        />
+        @if(showTextSignal()) {
+        <text
+          (click)="onDeskClick(desktop)"
+          [attr.y]="desktop.yCoord + 18"
+          [attr.x]="desktop.xCoord + 5"
+        >
+          {{ desktop.id }}
+        </text>
+        } }
+      </g>
+    </svg>
+  </div>
+</div>

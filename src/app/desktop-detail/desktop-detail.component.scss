@@ -1,0 +1,24 @@
+.currentDate {
+  font-weight: bold;
+}
+
+.line {
+  margin: 12px;
+}
+
+img {
+  transition: all 1s ease;
+  transform: rotateZ(-130deg);
+  width: 170px;
+}
+
+.start {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.list {
+  max-height: 50vh;
+  overflow-y: auto;
+}

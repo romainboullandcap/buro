@@ -1,0 +1,72 @@
+img {
+  width: 1000px;
+}
+
+#floorplan_img {
+  position: absolute;
+  z-index: 2;
+}
+
+#svg {
+  position: relative;
+  z-index: 10;
+}
+
+#svg rect:hover {
+  opacity: 70%;
+  cursor: pointer;
+}
+
+.main {
+  margin-top: 20px;
+  margin-left: 10px;
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(9, 0.2fr);
+  grid-template-rows: repeat(7, 0.2fr);
+}
+
+.square {
+  width: 15px;
+  height: 18px;
+}
+
+li {
+  display: flex;
+}
+
+.desc {
+  margin-left: 8px;
+}
+
+.legend {
+  grid-column: 8/10;
+  grid-row: 3/5;
+  border: solid 1px rgba(0, 0, 0, 0.133);
+  border-radius: 3px;
+  background-color: #eee;
+  z-index: 15;
+  padding: 10px;
+
+  margin-left: 15px;
+  margin-top: 19px;
+}
+
+svg .rotate {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.detail {
+  z-index: 12;
+  grid-column: 3/ 8;
+  grid-row: 3/5;
+  position: relative;
+  left: 25px;
+  width: 100%;
+}
+
+.floorplan {
+  grid-column: 1 / 10;
+  grid-row: 1 / 5;
+}

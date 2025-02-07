@@ -1,0 +1,37 @@
+<mat-card
+  [ngClass]="
+    getBookingsForDateAndDesktop(desktop()!.bookings, this.selectedDate)
+      .length > 0
+      ? 'busy'
+      : 'available'
+  "
+>
+  <mat-card-title class="listing-heading">{{ desktop()!.name }}</mat-card-title>
+  @if(getBookingsForDateAndDesktop(desktop()!.bookings,
+  this.selectedDate).length === 0) {
+  <div class="m1">
+    <button mat-flat-button accent (click)="bookDesktop(desktop()!.id)">
+      Book
+    </button>
+  </div>
+
+  }
+
+  <div
+    *ngFor="
+      let booking of getBookingsForDateAndDesktop(
+        desktop()!.bookings,
+        this.selectedDate
+      )
+    "
+  >
+    <div class="grid">
+      <span class="email">{{ booking.email }}</span>
+      @if(isMyBooking(booking)){
+      <button mat-fab (click)="deleteBooking(booking)">
+        <mat-icon>delete</mat-icon>
+      </button>
+      }
+    </div>
+  </div>
+</mat-card>

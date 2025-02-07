@@ -1,0 +1,34 @@
+.demo-inline-calendar-card {
+  width: 300px;
+}
+
+mat-card-title {
+  margin: 10px;
+}
+
+span {
+  margin: 10px;
+}
+
+@media (min-width: 500px) and (max-width: 768px) {
+  .results {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  input[type="text"] {
+    width: 70%;
+  }
+}
+@media (max-width: 499px) {
+  .results {
+    grid-template-columns: 1fr;
+  }
+}
+
+.flex {
+  justify-content: center;
+}
+
+.booked-date {
+  background-color: var(--color-accent);
+  border-radius: 50%;
+}

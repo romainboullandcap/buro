@@ -1,0 +1,42 @@
+<div class="flex p1 m1">
+  <mat-card class="p1 flex w100">
+    @if(desktop()!.id != -1) {
+    <div class="">
+      <h1>{{ desktop()!.name }}</h1>
+      <div class="list">
+        @for(booking of desktop()!.bookings; track booking.id){
+        <div class="flex align-center line">
+          <div class="m1" [class.currentDate]="isCurrentDate(booking.date)">
+            {{ booking.date | date : "dd/MM/YYYY" }} - {{ booking.email }}
+          </div>
+          <div>
+            @if(bookingService.isMyBooking(booking)) {
+            <button mat-mini-fab (click)="onDeleteClick(booking)">
+              <mat-icon>delete</mat-icon>
+            </button>
+            }
+          </div>
+        </div>
+        } @empty {
+        <div class="m1">
+          <div class="m1">Aucune réservation</div>
+        </div>
+        }
+      </div>
+      @if(isBookingAvailable()) {
+      <div>
+        <button mat-flat-button (click)="bookDesktop(desktop()!.id)">
+          Réserver
+        </button>
+      </div>
+      }
+    </div>
+    } @else {
+    <div class="start">
+      <div><h1>Cliquez sur un bureau pour commencer</h1></div>
+      <div><img src="assets/arrow.png" /></div>
+    </div>
+
+    }
+  </mat-card>
+</div>

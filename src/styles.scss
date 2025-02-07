@@ -1,0 +1,75 @@
+/* You can add global styles to this file, and also import other style files */
+@use "@angular/material" as mat;
+* {
+  margin: 0;
+  padding: 0;
+  --color-primary: #264653;
+  --color-secondary: #2a9d8f;
+  --color-accent: #e9c46a;
+  --color-warn: #f4a261;
+  --color-error: #e76f51;
+}
+
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+html {
+  color-scheme: light light;
+  @include mat.theme(
+    (
+      color: mat.$orange-palette,
+      typography: Roboto,
+      density: 0,
+    )
+  );
+}
+
+.m1 {
+  margin: 10px;
+}
+
+.p1 {
+  padding: 10px;
+}
+
+.flex {
+  display: flex;
+}
+
+.flex-row {
+  flex-direction: row;
+}
+
+.justify-content {
+  justify-content: center;
+}
+
+.secondary-color-bg {
+  background-color: var(--color-secondary);
+}
+
+.accent-color-bg {
+  background-color: var(--color-accent);
+}
+
+.error-color-bg {
+  background-color: var(--color-error);
+}
+
+.align-center {
+  align-items: center;
+}
+
+.w100 {
+  width: 100%;
+}
+
+.ml-1 {
+  margin-left: 10px;
+}

@@ -1,7 +1,20 @@
-import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
+/// <reference types="@angular/localize" />
 
-import { AppModule } from './app/app.module';
+/*
+ *  Protractor support is deprecated in Angular.
+ *  Protractor is used in this example for compatibility with Angular documentation tools.
+ */
+import {
+  bootstrapApplication,
+  provideProtractorTestingSupport,
+} from "@angular/platform-browser";
+import { AppComponent } from "./app/app.component";
+import { provideRouter } from "@angular/router";
+import routeConfig from "./app/routes";
+import { provideHttpClient } from "@angular/common/http";
+import { appConfig } from "./app/app.config";
+import "@angular/common/locales/global/fr";
 
-
-platformBrowserDynamic().bootstrapModule(AppModule)
-  .catch(err => console.error(err));
+bootstrapApplication(AppComponent, appConfig).catch((err) =>
+  console.error(err)
+);
