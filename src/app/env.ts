@@ -1,5 +1,5 @@
 export const ENV: { API_URL: string } = {
-  API_URL: "http://localhost:3333",
+  API_URL: process.env["API_URL"] || "http://localhost:3333",
 };
 
 export enum DESKTOP_STATE {
