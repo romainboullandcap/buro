@@ -40,6 +40,7 @@ export class AppComponent {
 
   onLogoutClick() {
     localStorage.removeItem("token");
+    localStorage.removeItem("email");
     this.router.navigate(["/login"]);
   }
 }
