@@ -1,5 +1,5 @@
 import { Component, inject } from "@angular/core";
-import { RouterModule } from "@angular/router";
+import { Router, RouterModule } from "@angular/router";
 import { LocalStorageService } from "./service/localstorage.service";
 import { AgendaDialogComponent } from "./agenda-dialog/agenda-dialog.component";
 import { MatDialog } from "@angular/material/dialog";
@@ -11,31 +11,7 @@ import { Desktop } from "./model/desktop";
 @Component({
   selector: "app-root",
   imports: [RouterModule, MatIconModule, MatButtonModule],
-  template: `
-    <main>
-      <a [routerLink]="['/']">
-        <header class="brand-name">
-          <div>
-            <h1>Buro</h1>
-          </div>
-          <div class="name flex align-center">
-            @if(this.desktopList && this.desktopList.length > 0) {
-            <div>
-              <button mat-mini-fab (click)="onAgendaClick()">
-                <mat-icon>calendar_today</mat-icon>
-              </button>
-            </div>
-            }
-
-            <div class="ml-1">{{ localstorageService.currentUserEmail() }}</div>
-          </div>
-        </header>
-      </a>
-      <section class="content">
-        <router-outlet></router-outlet>
-      </section>
-    </main>
-  `,
+  templateUrl: "app.component.html",
   styleUrls: ["./app.component.scss"],
 })
 export class AppComponent {
@@ -47,6 +23,7 @@ export class AppComponent {
   desktopList: Desktop[] = [];
 
   readonly dialog = inject(MatDialog);
+  router = inject(Router);
 
   constructor() {
     this.desktopService.desktopList$.subscribe((d) => {
@@ -59,5 +36,10 @@ export class AppComponent {
       width: "50vw",
       data: { desktopList: this.desktopList },
     });
+  }
+
+  onLogoutClick() {
+    localStorage.removeItem("token");
+    this.router.navigate(["/login"]);
   }
 }

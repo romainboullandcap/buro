@@ -1,17 +1,5 @@
-import {
-  AfterViewInit,
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  computed,
-  ElementRef,
-  inject,
-  signal,
-  viewChild,
-  ViewEncapsulation,
-} from "@angular/core";
+import { Component, inject, signal } from "@angular/core";
 import { CommonModule } from "@angular/common";
-import { DesktopComponent } from "../desktop/desktop.component";
 import { Desktop } from "../model/desktop";
 import { DesktopService } from "../service/desktop.service";
 import { MatSnackBar } from "@angular/material/snack-bar";
@@ -30,7 +18,6 @@ import { BookingService } from "../service/booking.service";
 import { MatButtonModule } from "@angular/material/button";
 import { MatIconModule } from "@angular/material/icon";
 import { FloorplanComponent } from "../floorplan/floorplan.component";
-import { DesktopDetailComponent } from "../desktop-detail/desktop-detail.component";
 
 @Component({
   selector: "app-home",
@@ -49,7 +36,7 @@ import { DesktopDetailComponent } from "../desktop-detail/desktop-detail.compone
   templateUrl: `home.component.html`,
   styleUrls: ["./home.component.scss"],
 })
-export class HomeComponent implements AfterViewInit {
+export class HomeComponent {
   desktopList = signal<Desktop[]>([]);
   desktopService: DesktopService = inject(DesktopService);
   bookingService: BookingService = inject(BookingService);
@@ -59,7 +46,6 @@ export class HomeComponent implements AfterViewInit {
   constructor() {
     this.loadData();
   }
-  ngAfterViewInit(): void {}
 
   selectedDateRange: DateRange<Date | null> = new DateRange(null, null);
 
@@ -81,23 +67,17 @@ export class HomeComponent implements AfterViewInit {
   }
 
   loadData() {
-    console.log("loadData");
     this.desktopService.getAllDesktop().subscribe((desktopList: Desktop[]) => {
       this.desktopList.set(desktopList);
     });
   }
 
   dateClass: MatCalendarCellClassFunction<Date> = (cellDate, view) => {
-    console.log("dateClass");
     if (
       view === "month" &&
       this.selectedDateRange.start &&
       this.selectedDateRange.end
     ) {
-      console.log("this.selectedDateRange", this.selectedDateRange);
-      console.log("this.start", this.selectedDateRange.start.getTime());
-      console.log("this.end", this.selectedDateRange.end.getTime());
-      console.log("cellDate", cellDate.getTime());
       return cellDate.getTime() >= this.selectedDateRange.start.getTime() &&
         cellDate.getTime() <= this.selectedDateRange.end.getTime()
         ? "booked-date"
