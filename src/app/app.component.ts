@@ -41,6 +41,7 @@ export class AppComponent {
   onLogoutClick() {
     localStorage.removeItem("token");
     localStorage.removeItem("email");
+    this.localstorageService.setCurrentUserEmail("");
     this.router.navigate(["/login"]);
   }
 }
