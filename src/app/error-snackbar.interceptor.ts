@@ -15,6 +15,8 @@ export const errorSnackbarInterceptor: HttpInterceptorFn = (req, next) => {
         _snackBar.open("Veuillez vous authentifier", "Masquer", {
           duration: 3000,
         });
+        localStorage.removeItem("email");
+        localStorage.removeItem("token");
         router.navigate(["/login"]);
       } else {
         _snackBar.open("Erreur : " + getErrorMessage(err), "", {

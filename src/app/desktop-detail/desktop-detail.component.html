@@ -26,7 +26,7 @@
       @if(isBookingAvailable()) {
       <div>
         <button mat-flat-button (click)="bookDesktop(desktop()!.id)">
-          Réserver
+          Réserver pour le {{ selectedDate() | date : "EEEE dd" }}
         </button>
       </div>
       }
