@@ -1,0 +1,16 @@
+.booked-date {
+  background-color: var(--color-accent) !important;
+  border-radius: 50%;
+}
+.demo-inline-calendar-card {
+  width: 300px;
+}
+.mat-calendar-body-selected {
+  background-color: transparent !important;
+  color: black !important;
+}
+
+.selected-date {
+  background-color: var(--color-secondary) !important;
+  border-radius: 50%;
+}

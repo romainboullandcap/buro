@@ -1,20 +1,11 @@
 <div class="flex">
   <section>
-    <mat-card-title>
-      Réservations pour le<br />
-      {{ selectedDate | date : "cccc dd/MM/YYYY" | titlecase }}
-    </mat-card-title>
-    <mat-card class="demo-inline-calendar-card">
-      <mat-calendar
-        (selectedChange)="_onSelectedChange($event)"
-        [(selected)]="selectedDate"
-      ></mat-calendar>
-    </mat-card>
+    <app-calendar [(_selectedDate)]="selectedDateCalendar"></app-calendar>
   </section>
   <section>
     <app-floorplan
       [desktopList]="desktopList()"
-      [selectedDate]="selectedDate"
+      [selectedDate]="selectedDateCalendar"
       (onDelete)="loadData()"
     ></app-floorplan>
   </section>

@@ -1,4 +1,11 @@
-import { Component, inject, signal } from "@angular/core";
+import {
+  AfterContentChecked,
+  AfterViewInit,
+  Component,
+  inject,
+  signal,
+  ViewEncapsulation,
+} from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { Desktop } from "../model/desktop";
 import { DesktopService } from "../service/desktop.service";
@@ -11,13 +18,15 @@ import {
 import { MatInputModule } from "@angular/material/input";
 import { MatFormFieldModule } from "@angular/material/form-field";
 
-import { ReactiveFormsModule } from "@angular/forms";
-import { provideNativeDateAdapter } from "@angular/material/core";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { DateAdapter, provideNativeDateAdapter } from "@angular/material/core";
 import { MatCardModule } from "@angular/material/card";
 import { BookingService } from "../service/booking.service";
 import { MatButtonModule } from "@angular/material/button";
 import { MatIconModule } from "@angular/material/icon";
 import { FloorplanComponent } from "../floorplan/floorplan.component";
+import { MatSlideToggleModule } from "@angular/material/slide-toggle";
+import { CalendarComponent } from "../calendar/calendar.component";
 
 @Component({
   selector: "app-home",
@@ -31,6 +40,9 @@ import { FloorplanComponent } from "../floorplan/floorplan.component";
     MatCardModule,
     MatIconModule,
     FloorplanComponent,
+    MatSlideToggleModule,
+    FormsModule,
+    CalendarComponent,
   ],
   providers: [provideNativeDateAdapter()],
   templateUrl: `home.component.html`,
@@ -39,31 +51,25 @@ import { FloorplanComponent } from "../floorplan/floorplan.component";
 export class HomeComponent {
   desktopList = signal<Desktop[]>([]);
   desktopService: DesktopService = inject(DesktopService);
-  bookingService: BookingService = inject(BookingService);
-  _snackBar = inject(MatSnackBar);
-  selectedDate: Date = new Date();
 
+  _selectedDateCalendar!: Date;
+  public set selectedDateCalendar(date: Date) {
+    this._selectedDateCalendar = date;
+    console.log(
+      "[HOME] this._selectedDateCalendar",
+      this._selectedDateCalendar
+    );
+  }
+  public get selectedDateCalendar() {
+    return this._selectedDateCalendar;
+  }
   constructor() {
     this.loadData();
-  }
-
-  selectedDateRange: DateRange<Date | null> = new DateRange(null, null);
-
-  _onSelectedChange(date: any): void {
-    if (
-      date &&
-      this.selectedDateRange &&
-      this.selectedDateRange.start &&
-      date > this.selectedDateRange.start &&
-      !this.selectedDateRange.end
-    ) {
-      this.selectedDateRange = new DateRange(
-        this.selectedDateRange.start,
-        date
-      );
-    } else {
-      this.selectedDateRange = new DateRange(date, null);
-    }
+    this.selectedDateCalendar = new Date();
+    this.selectedDateCalendar.setHours(0);
+    this.selectedDateCalendar.setMinutes(0);
+    this.selectedDateCalendar.setSeconds(0);
+    this.selectedDateCalendar.setMilliseconds(0);
   }
 
   loadData() {
@@ -71,18 +77,4 @@ export class HomeComponent {
       this.desktopList.set(desktopList);
     });
   }
-
-  dateClass: MatCalendarCellClassFunction<Date> = (cellDate, view) => {
-    if (
-      view === "month" &&
-      this.selectedDateRange.start &&
-      this.selectedDateRange.end
-    ) {
-      return cellDate.getTime() >= this.selectedDateRange.start.getTime() &&
-        cellDate.getTime() <= this.selectedDateRange.end.getTime()
-        ? "booked-date"
-        : "";
-    }
-    return "";
-  };
 }
