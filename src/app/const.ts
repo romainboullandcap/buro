@@ -1,0 +1,5 @@
+export enum DESKTOP_STATE {
+  AVAILABLE,
+  BOOKED,
+  BOOKED_FOR_ME,
+}
