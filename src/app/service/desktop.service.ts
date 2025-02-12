@@ -24,6 +24,9 @@ export class DesktopService {
   desktopListBS = new BehaviorSubject<Desktop[]>([]);
   desktopList$ = this.desktopListBS.asObservable();
 
+  isMultipleDateSelection$ = new BehaviorSubject<boolean>(false);
+  refreshCalendarSelection$ = new BehaviorSubject<void>(undefined);
+
   constructor() {}
 
   getAllDesktop(): Observable<Desktop[]> {
@@ -60,7 +63,20 @@ export class DesktopService {
     });
   }
 
+  bookDateList(
+    desktopId: number,
+    email: string | null,
+    dateList: Date[] | undefined
+  ) {
+    return this.http.post(`${ENV.API_URL}/desktop/bookList`, {
+      email: email,
+      desktopId: desktopId,
+      dateList: dateList,
+    });
+  }
+
   setSelectedDesktop(desktop: Desktop) {
+    console.log("setSelectedDesktop", desktop);
     this.selectedDesktopBS.next(desktop);
   }
 }

@@ -31,6 +31,8 @@ export const errorSnackbarInterceptor: HttpInterceptorFn = (req, next) => {
 function getErrorMessage(err: any) {
   if (err.error.errors) {
     return err.error.errors.map((error: any) => error.message).join(", ");
+  } else if (err.message) {
+    return err.message;
   } else {
     return err.error;
   }

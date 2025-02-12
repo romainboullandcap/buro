@@ -48,7 +48,7 @@ export class FloorplanComponent {
       this.selectedDesktop() !== undefined &&
       this.selectedDesktop()!.id === desktop.id
     ) {
-      return "#000";
+      return "#000000";
     } else {
       return this.getFillColor(desktop);
     }

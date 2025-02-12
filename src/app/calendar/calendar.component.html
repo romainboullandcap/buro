@@ -2,10 +2,13 @@
   <br />
   @if(isMultipleDateSelection) {
   <span
-    >Réservation multiple pour<br />
+    >Réservation multiple de<br />
     @if(selectedDateList.length ===0) { aucun jour } @if(selectedDateList.length
     == 1) { 1 jour } @if(selectedDateList.length > 1) {
-    {{ selectedDateList.length }} jours }
+    {{ selectedDateList.length }} jours } @if(selectedDesktop &&
+    selectedDesktop.id > 0) { <br />pour le bureau
+    {{ selectedDesktop!.name }}
+    } @else { }
   </span>
   } @else {
   <span
@@ -25,3 +28,10 @@
 <mat-slide-toggle class="m1" (change)="onIsMultipleDateChange($event)"
   >Réservation multi-jours
 </mat-slide-toggle>
+<button
+  mat-raised-button
+  (click)="bookMultiple()"
+  [disabled]="isBookButtonDisabled()"
+>
+  Book
+</button>

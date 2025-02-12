@@ -25,6 +25,11 @@ import { MatIconModule } from "@angular/material/icon";
 import { MatCardModule } from "@angular/material/card";
 import { DesktopService } from "../service/desktop.service";
 import { Desktop } from "../model/desktop";
+import { MatSnackBar } from "@angular/material/snack-bar";
+import { DESKTOP_STATE } from "../env";
+import { BookingService } from "../service/booking.service";
+
+import { DateTime } from "luxon";
 
 @Component({
   selector: "app-calendar",
@@ -55,17 +60,17 @@ export class CalendarComponent {
     this._selectedDate = date;
     this.updateSelectedDate(date);
     console.log("[Calendar] get selectedDate", this.selectedDate);
-    this.dateAdapter.setLocale("fr"); // OMG stop
+    this.refreshCalendarSelection();
   }
   public get selectedDate() {
     return this._selectedDate;
   }
   dateAdapter = inject(DateAdapter<Date>);
   desktopService = inject(DesktopService);
+  bookingService = inject(BookingService);
 
   @Output() _selectedDateChange = new EventEmitter<Date>();
   updateSelectedDate(date: Date): void {
-    //this.selectedDate = date;
     console.log("[Calendar]  emit _selectedDateChange", date);
     this._selectedDateChange.emit(date);
   }
@@ -74,7 +79,7 @@ export class CalendarComponent {
 
   public set isMultipleDateSelection(b: boolean) {
     this._isMultipleDateSelection = b;
-    if (this._isMultipleDateSelection) {
+    if (this._isMultipleDateSelection && this.selectedDesktop!.id == -1) {
       const desk: Desktop = {
         id: -2,
         angle: 0,
@@ -101,9 +106,27 @@ export class CalendarComponent {
 
   calendarClickTimer = false;
 
-  isFirstClick = true;
+  isFirstClick = false; // inutile maintenant ?
+  _selectedDesktop: Desktop | undefined;
+  public set selectedDesktop(d: Desktop | undefined) {
+    this._selectedDesktop = d;
+    this.dateAdapter.setLocale("fr");
+  }
 
-  constructor() {}
+  public get selectedDesktop() {
+    return this._selectedDesktop;
+  }
+
+  _snackBar = inject(MatSnackBar);
+
+  constructor() {
+    this.desktopService.selectedDesktopBS.subscribe(
+      (v) => (this.selectedDesktop = v)
+    );
+    this.desktopService.refreshCalendarSelection$.subscribe((d) =>
+      this.refreshCalendarSelection()
+    );
+  }
   ngAfterContentChecked(): void {
     this.setGridCellOnClick();
   }
@@ -118,9 +141,22 @@ export class CalendarComponent {
     //console.log("cellList", cellList.length);
     Array.prototype.forEach.call(cellList, (testElement: HTMLElement) => {
       testElement!.onclick = (ev: MouseEvent) => {
+        console.log(
+          "date parse",
+          DateTime.fromFormat(
+            testElement.firstElementChild?.attributes[4].value!,
+            "dd MMMM yyyy",
+            { locale: "fr" }
+          ).toString()
+        );
         this.cellOnClick(
           +testElement.attributes[2].value,
-          +testElement.attributes[3].value
+          +testElement.attributes[3].value,
+          DateTime.fromFormat(
+            testElement.firstElementChild?.attributes[4].value!,
+            "dd MMMM yyyy",
+            { locale: "fr" }
+          )
         );
       };
     });
@@ -144,8 +180,7 @@ export class CalendarComponent {
           1
         );
       }
-      //console.log("this.selectedDateList", this.selectedDateList);
-      this.dateAdapter.setLocale("fr");
+      this.refreshCalendarSelection();
       this.setGridCellOnClick();
     }
     setTimeout(() => (this.calendarClickTimer = false), 200);
@@ -171,9 +206,9 @@ export class CalendarComponent {
     return "";
   };
 
-  cellOnClick(rowIndex: number, columnIndex: number) {
+  cellOnClick(rowIndex: number, columnIndex: number, clickedDate: DateTime) {
     //this.updateSelectedDate(this.selectedDate);
-    console.log("cellOnClick");
+    console.log("cellOnClick", this.selectedDate);
     if (
       columnIndex == 5 ||
       columnIndex == 6 ||
@@ -181,15 +216,21 @@ export class CalendarComponent {
       (rowIndex == 0 && columnIndex == 1)
     )
       return; // click samedi/dimanche
+    // gérer le click sur les dates disabled à la main
+    if (!this.isBookingAvailable(clickedDate.toJSDate())) return;
+
     console.log("selectedDateList", this.selectedDateList);
-    if (!this.calendarClickTimer) {
+    if (!this.calendarClickTimer && this.isMultipleDateSelection) {
       if (this.isFirstClick) {
         this.isFirstClick = false;
         // ajouter la date actuelle à la selection
         this.selectedDateList.push(this.selectedDate);
-        console.log("first click add", this.selectedDateList);
+        console.log(
+          "first click add",
+          this.selectedDateList.map((d) => d.getTime())
+        );
       } else {
-        //console.log("test", this.selectedDate);
+        console.log("test", this.selectedDate);
         const index = this.selectedDateList.findIndex(
           (x) => x.getTime() === this.selectedDate.getTime()
         );
@@ -221,11 +262,75 @@ export class CalendarComponent {
   dateFilter = (d: Date | null): boolean => {
     const day = (d || new Date()).getDay();
     // Prevent Saturday and Sunday from being selected.
-    return day !== 0 && day !== 6;
+    if (day === 0 || day === 6) return false;
+    if (d && this.isMultipleDateSelection) {
+      return this.isBookingAvailable(d);
+    }
+    return true;
   };
+
+  isBookingAvailable(date: Date) {
+    // pas a jour lors apres un create
+    return !this.bookingService.hasBookingForDate(
+      date,
+      localStorage.getItem("email")!
+    );
+  }
 
   onIsMultipleDateChange($event: MatSlideToggleChange) {
     this.isMultipleDateSelection = !this.isMultipleDateSelection;
-    this.dateAdapter.setLocale("fr"); // OMG stop full bug
+
+    this.desktopService.isMultipleDateSelection$.next(
+      this.isMultipleDateSelection
+    );
+    if (!this.isMultipleDateSelection) {
+      this.selectedDateList = [];
+    }
+    this.refreshCalendarSelection();
+  }
+
+  bookMultiple() {
+    this.desktopService
+      .bookDateList(
+        this.selectedDesktop!.id,
+        localStorage.getItem("email"),
+        this.selectedDateList.map((d) => {
+          d.setHours(0);
+          d.setMinutes(0);
+          d.setSeconds(0);
+          d.setMilliseconds(0);
+          return d;
+        })
+      )
+      .subscribe({
+        next: () => {
+          this.selectedDateList = [];
+          this._snackBar.open("Réservation effectuée", "Masquer", {
+            duration: 1000,
+          });
+          this.desktopService
+            .getAllDesktop()
+            .subscribe((d) => this.refreshCalendarSelection());
+        },
+        error: (error) => {
+          this.selectedDateList = [];
+          this.refreshCalendarSelection();
+        },
+      });
+  }
+
+  isBookButtonDisabled(): unknown {
+    const res =
+      !this.isMultipleDateSelection ||
+      !this.selectedDesktop ||
+      this.selectedDesktop.id === -1 || // nul
+      this.selectedDesktop.id === -2 ||
+      this.selectedDateList.length === 0;
+    return res;
+  }
+
+  refreshCalendarSelection() {
+    console.log("refreshCalendarSelection");
+    this.dateAdapter.setLocale("fr");
   }
 }
