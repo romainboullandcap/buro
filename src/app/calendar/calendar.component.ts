@@ -26,7 +26,6 @@ import { MatCardModule } from "@angular/material/card";
 import { DesktopService } from "../service/desktop.service";
 import { Desktop } from "../model/desktop";
 import { MatSnackBar } from "@angular/material/snack-bar";
-import { DESKTOP_STATE } from "../env";
 import { BookingService } from "../service/booking.service";
 
 import { DateTime } from "luxon";

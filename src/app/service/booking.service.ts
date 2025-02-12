@@ -1,9 +1,10 @@
 import { HttpClient } from "@angular/common/http";
 import { inject, Injectable } from "@angular/core";
-import { DESKTOP_STATE, ENV } from "../env";
+import { ENV } from "../env";
 import { Booking } from "../model/booking";
 import { Desktop } from "../model/desktop";
 import { DesktopService } from "./desktop.service";
+import { DESKTOP_STATE } from "../const";
 
 @Injectable({
   providedIn: "root",

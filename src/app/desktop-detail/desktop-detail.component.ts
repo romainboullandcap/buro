@@ -1,7 +1,6 @@
 import { Component, inject, input, output } from "@angular/core";
 import { Desktop } from "../model/desktop";
 import { BookingService } from "../service/booking.service";
-import { DESKTOP_STATE } from "../env";
 import { Booking } from "../model/booking";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { DesktopService } from "../service/desktop.service";
@@ -14,6 +13,7 @@ import { MatButtonModule } from "@angular/material/button";
 import { MatDatepickerModule } from "@angular/material/datepicker";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatInputModule } from "@angular/material/input";
+import { DESKTOP_STATE } from "../const";
 
 @Component({
   selector: "app-desktop-detail",

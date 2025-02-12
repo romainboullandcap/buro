@@ -2,11 +2,11 @@ import { Component, inject, input, output, signal } from "@angular/core";
 import { Desktop } from "../model/desktop";
 import { BookingService } from "../service/booking.service";
 import { DesktopService } from "../service/desktop.service";
-import { DESKTOP_STATE } from "../env";
 import { toSignal } from "@angular/core/rxjs-interop";
 import { DesktopDetailComponent } from "../desktop-detail/desktop-detail.component";
 import { MatSlideToggleModule } from "@angular/material/slide-toggle";
 import { FormsModule } from "@angular/forms";
+import { DESKTOP_STATE } from "../const";
 
 @Component({
   selector: "app-floorplan",
