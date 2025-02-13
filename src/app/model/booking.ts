@@ -4,4 +4,5 @@ export interface Booking {
   email: string;
   createdAt: Date;
   updatedAt: Date;
+  desktopId: number;
 }

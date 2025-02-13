@@ -262,9 +262,14 @@ export class CalendarComponent {
     const day = (d || new Date()).getDay();
     // Prevent Saturday and Sunday from being selected.
     if (day === 0 || day === 6) return false;
-    if (d && this.isMultipleDateSelection) {
-      return this.isBookingAvailable(d);
-    }
+    const start = new Date();
+    start.setHours(0);
+    start.setMinutes(0);
+    start.setHours(0);
+    start.setSeconds(0);
+    start.setMilliseconds(0);
+    if (!d) return true;
+    if (d.getTime() < start.getTime()) return false;
     return true;
   };
 

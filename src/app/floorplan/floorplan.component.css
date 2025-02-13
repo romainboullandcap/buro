@@ -10,11 +10,7 @@ img {
 #svg {
   position: relative;
   z-index: 10;
-}
-
-#svg rect:hover {
-  opacity: 70%;
-  cursor: pointer;
+  cursor: default !important;
 }
 
 .main {
@@ -71,4 +67,18 @@ svg .rotate {
 .floorplan {
   grid-column: 1 / 10;
   grid-row: 1 / 5;
+}
+
+.title {
+  width: 100%;
+  text-align: center;
+  margin-top: 10px;
+}
+
+.desktop-text {
+  cursor: pointer;
+}
+
+.rotate {
+  cursor: pointer;
 }

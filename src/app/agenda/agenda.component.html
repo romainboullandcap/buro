@@ -1,7 +1,31 @@
-<h2 mat-dialog-title>Mes réservations</h2>
+<h2 mat-dialog-title>Mes prochaines réservations</h2>
 @if(desktopList().length>0){
+
+<div class="table">
+  <table>
+    <thead>
+      <tr class="table100-head">
+        <th class="column1">Date</th>
+        <th class="column2">Bureau</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for(booking of getBookingSortedForNextWeek(); track booking.desktopId){
+      <tr>
+        <td class="column1">{{ booking.date | date : "dd/MM/YYYY" }}</td>
+        <td class="column2">{{ booking.desktopId }}</td>
+      </tr>
+
+      } @empty {
+      <div class="m1">Aucune réservation</div>
+      }
+    </tbody>
+  </table>
+</div>
+
+<!--
 <mat-card class="demo-inline-calendar-card">
   <mat-calendar [dateClass]="dateClass" disabled="true"></mat-calendar>
 </mat-card>
-
+-->
 }

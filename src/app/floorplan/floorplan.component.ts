@@ -7,10 +7,16 @@ import { DesktopDetailComponent } from "../desktop-detail/desktop-detail.compone
 import { MatSlideToggleModule } from "@angular/material/slide-toggle";
 import { FormsModule } from "@angular/forms";
 import { DESKTOP_STATE } from "../const";
+import { CommonModule } from "@angular/common";
 
 @Component({
   selector: "app-floorplan",
-  imports: [DesktopDetailComponent, MatSlideToggleModule, FormsModule],
+  imports: [
+    DesktopDetailComponent,
+    MatSlideToggleModule,
+    FormsModule,
+    CommonModule,
+  ],
   templateUrl: "floorplan.component.html",
   styleUrls: ["floorplan.component.css"],
 })
@@ -58,5 +64,12 @@ export class FloorplanComponent {
 
   onDeleteFromDetail() {
     this.onDelete.emit();
+  }
+
+  getXPos(x: number, id: number) {
+    if (id < 10) {
+      return x + 5;
+    }
+    return x;
   }
 }

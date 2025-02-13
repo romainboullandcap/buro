@@ -1,8 +1,30 @@
 <mat-card>
   <h2>Faire une réservation</h2>
-  <mat-slide-toggle class="m1" (change)="onIsMultipleDateChange($event)"
-    >Réservation multi-jours
-  </mat-slide-toggle>
+
+  <div>
+    <mat-card-title>
+      <br />
+      <span
+        >Réservation multiple de<br />
+        @if(selectedDateList.length ===0) { aucun jour }
+        @if(selectedDateList.length == 1) { 1 jour } @if(selectedDateList.length
+        > 1) {
+        {{ selectedDateList.length }} jours } @if(selectedDesktop &&
+        selectedDesktop.id > 0) { <br />pour le bureau
+        {{ selectedDesktop!.name }}
+        } @else { }
+      </span>
+    </mat-card-title>
+    <mat-card class="demo-inline-calendar-card">
+      <mat-calendar
+        [dateFilter]="dateFilter"
+        (selectedChange)="_onSelectedChange($event)"
+        [(selected)]="selectedDate"
+        [dateClass]="dateClass"
+      ></mat-calendar>
+    </mat-card>
+  </div>
+
   <button
     mat-raised-button
     (click)="bookMultiple()"

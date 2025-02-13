@@ -77,7 +77,6 @@ export class HomeComponent {
   loadData() {
     this.desktopService.getAllDesktop().subscribe((desktopList: Desktop[]) => {
       this.desktopList.set(desktopList);
-      console.log("set", this.desktopList());
     });
   }
 }

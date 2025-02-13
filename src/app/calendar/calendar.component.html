@@ -1,22 +1,4 @@
-<mat-card-title>
-  <br />
-  @if(isMultipleDateSelection) {
-  <span
-    >Réservation multiple de<br />
-    @if(selectedDateList.length ===0) { aucun jour } @if(selectedDateList.length
-    == 1) { 1 jour } @if(selectedDateList.length > 1) {
-    {{ selectedDateList.length }} jours } @if(selectedDesktop &&
-    selectedDesktop.id > 0) { <br />pour le bureau
-    {{ selectedDesktop!.name }}
-    } @else { }
-  </span>
-  } @else {
-  <span
-    >Réservations pour le<br />
-    {{ selectedDate | date : "cccc dd/MM/YYYY" | titlecase }}</span
-  >
-  }
-</mat-card-title>
+<mat-card-title><div class="m1">Choix Date</div></mat-card-title>
 <mat-card class="demo-inline-calendar-card">
   <mat-calendar
     [dateFilter]="dateFilter"

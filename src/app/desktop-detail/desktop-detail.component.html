@@ -1,15 +1,15 @@
 <div class="flex p1 m1">
   @if(desktop()!.id > 0 && !isMultipleDateSelection) {
-  <mat-card class="p1 flex w100">
+  <mat-card class="p1 flex card">
     <div class="m1">
-      <h1>{{ desktop()!.name }}</h1>
+      <h1>Bureau {{ desktop()!.id }}</h1>
       <div class="list">
         @for(booking of getBookingSortedForNextWeek(); track booking.id){
         <div class="flex align-center line">
-          <div class="m1">
+          <div [class.today]="isTodayBooking(booking)">
             {{ booking.date | date : "dd/MM/YYYY" }} - {{ booking.email }}
           </div>
-          <div>
+          <div class="button-delete">
             @if(bookingService.isMyBooking(booking)) {
             <button mat-mini-fab (click)="onDeleteClick(booking)">
               <mat-icon>delete</mat-icon>
@@ -18,13 +18,13 @@
           </div>
         </div>
         } @empty {
-        <div class="m1">Aucune réservation pour ce jour</div>
+        <div class="line">Aucune réservation pour ce jour</div>
         }
       </div>
     </div>
   </mat-card>
   } @else if(desktop()!.id == -1) {
-  <mat-card>
+  <mat-card class="p1 flex">
     <div class="start">
       <div><h1>Cliquez sur un bureau pour voir ses réservations</h1></div>
       <div><img src="assets/arrow.png" /></div></div

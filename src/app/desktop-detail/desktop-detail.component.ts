@@ -99,20 +99,11 @@ export class DesktopDetailComponent {
   }
 
   isTodayBooking(booking: Booking) {
-    if (this.selectedDate() !== undefined) {
-      return (
-        new Date(booking.date).getDate() === this.selectedDate()!.getDate() &&
-        new Date(booking.date).getMonth() === this.selectedDate()!.getMonth() &&
-        new Date(booking.date).getFullYear() ===
-          this.selectedDate()!.getFullYear()
-      );
-    } else {
-      return false;
-    }
-  }
-
-  getTodayBooking() {
-    return this.desktop()?.bookings.filter((x) => this.isTodayBooking(x));
+    return (
+      new Date(booking.date).getDate() === new Date().getDate() &&
+      new Date(booking.date).getMonth() === new Date().getMonth() &&
+      new Date(booking.date).getFullYear() === new Date().getFullYear()
+    );
   }
 
   getBookingSortedForNextWeek() {
@@ -122,6 +113,8 @@ export class DesktopDetailComponent {
     day.setHours(0);
     day.setMinutes(0);
     day.setHours(0);
+    day.setSeconds(0);
+    day.setMilliseconds(0);
     const res = this.desktop()!
       .bookings.sort(
         (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
