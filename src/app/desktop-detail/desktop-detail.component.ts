@@ -115,17 +115,22 @@ export class DesktopDetailComponent {
     return this.desktop()?.bookings.filter((x) => this.isTodayBooking(x));
   }
 
-  getBookingSorted() {
+  getBookingSortedForNextWeek() {
     const dateWeek = new Date();
     dateWeek.setDate(dateWeek.getDate() + 6);
+    const day = new Date();
+    day.setHours(0);
+    day.setMinutes(0);
+    day.setHours(0);
     const res = this.desktop()!
       .bookings.sort(
         (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
       )
       .filter(
-        (booking) => new Date(booking.date).getTime() < dateWeek.getTime()
+        (booking) =>
+          new Date(booking.date).getTime() < dateWeek.getTime() &&
+          new Date(booking.date).getTime() >= day.getTime()
       );
-    console.log("res", res);
     return res.slice();
   }
 }

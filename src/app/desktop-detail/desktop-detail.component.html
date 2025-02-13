@@ -4,7 +4,7 @@
     <div class="m1">
       <h1>{{ desktop()!.name }}</h1>
       <div class="list">
-        @for(booking of getBookingSorted(); track booking.id){
+        @for(booking of getBookingSortedForNextWeek(); track booking.id){
         <div class="flex align-center line">
           <div class="m1">
             {{ booking.date | date : "dd/MM/YYYY" }} - {{ booking.email }}
