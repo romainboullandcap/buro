@@ -25,8 +25,6 @@ export class FloorplanComponent {
   desktopList = input<Desktop[]>([]);
 
   selectedDesktop = toSignal(this.desktopService.selectedDesktop$);
-  showText = false;
-  showTextSignal = signal<boolean>(false);
 
   onDelete = output<void>();
 
@@ -56,10 +54,6 @@ export class FloorplanComponent {
 
   onDeskClick(desktop: Desktop) {
     this.desktopService.setSelectedDesktop(desktop);
-  }
-
-  onShowTextChange() {
-    this.showTextSignal.set(this.showText);
   }
 
   onDeleteFromDetail() {

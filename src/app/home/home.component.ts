@@ -27,6 +27,7 @@ import { MatIconModule } from "@angular/material/icon";
 import { FloorplanComponent } from "../floorplan/floorplan.component";
 import { MatSlideToggleModule } from "@angular/material/slide-toggle";
 import { CalendarComponent } from "../calendar/calendar.component";
+import { AgendaComponent } from "../agenda/agenda.component";
 
 @Component({
   selector: "app-home",
@@ -43,6 +44,7 @@ import { CalendarComponent } from "../calendar/calendar.component";
     MatSlideToggleModule,
     FormsModule,
     CalendarComponent,
+    AgendaComponent,
   ],
   providers: [provideNativeDateAdapter()],
   templateUrl: `home.component.html`,
@@ -75,6 +77,7 @@ export class HomeComponent {
   loadData() {
     this.desktopService.getAllDesktop().subscribe((desktopList: Desktop[]) => {
       this.desktopList.set(desktopList);
+      console.log("set", this.desktopList());
     });
   }
 }

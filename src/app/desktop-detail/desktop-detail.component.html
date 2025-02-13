@@ -4,7 +4,7 @@
     <div class="m1">
       <h1>{{ desktop()!.name }}</h1>
       <div class="list">
-        @for(booking of getTodayBooking(); track booking.id){
+        @for(booking of getBookingSorted(); track booking.id){
         <div class="flex align-center line">
           <div class="m1">
             {{ booking.date | date : "dd/MM/YYYY" }} - {{ booking.email }}
@@ -18,30 +18,15 @@
           </div>
         </div>
         } @empty {
-        <div class="m1">
-          <div class="m1">Aucune réservation pour ce jour</div>
-        </div>
+        <div class="m1">Aucune réservation pour ce jour</div>
         }
       </div>
-      @if(isBookingAvailable()) {
-      <div>
-        <button mat-flat-button (click)="bookDesktop(desktop()!.id)">
-          Réserver pour le {{ selectedDate() | date : "EEEE dd" }}
-        </button>
-      </div>
-      }
     </div>
   </mat-card>
   } @else if(desktop()!.id == -1) {
   <mat-card>
     <div class="start">
       <div><h1>Cliquez sur un bureau pour voir ses réservations</h1></div>
-      <div><img src="assets/arrow.png" /></div></div
-  ></mat-card>
-  } @else if(desktop()!.id == -2) {
-  <mat-card>
-    <div class="start">
-      <div><h1>Cliquez sur un bureau à réserver</h1></div>
       <div><img src="assets/arrow.png" /></div></div
   ></mat-card>
   }

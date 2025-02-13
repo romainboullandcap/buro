@@ -1,0 +1,28 @@
+.booked-date {
+  background-color: var(--color-accent);
+  border-radius: 50%;
+}
+.demo-inline-calendar-card {
+  width: 300px;
+  // cursor: default !important;
+}
+
+button {
+  //cursor: default !important;
+}
+
+.mat-calendar-body-cell :hover {
+  background-color: transparent !important;
+}
+
+.mat-calendar-body-cell button :hover {
+  background-color: transparent !important;
+}
+
+.mat-calendar-body-active :hover {
+  background-color: transparent !important;
+}
+
+.mat-focus-indicator {
+  background-color: transparent !important;
+}

@@ -318,16 +318,6 @@ export class CalendarComponent {
       });
   }
 
-  isBookButtonDisabled(): unknown {
-    const res =
-      !this.isMultipleDateSelection ||
-      !this.selectedDesktop ||
-      this.selectedDesktop.id === -1 || // nul
-      this.selectedDesktop.id === -2 ||
-      this.selectedDateList.length === 0;
-    return res;
-  }
-
   refreshCalendarSelection() {
     console.log("refreshCalendarSelection");
     this.dateAdapter.setLocale("fr");

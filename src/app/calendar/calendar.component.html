@@ -25,13 +25,3 @@
     [dateClass]="dateClass"
   ></mat-calendar>
 </mat-card>
-<mat-slide-toggle class="m1" (change)="onIsMultipleDateChange($event)"
-  >Réservation multi-jours
-</mat-slide-toggle>
-<button
-  mat-raised-button
-  (click)="bookMultiple()"
-  [disabled]="isBookButtonDisabled()"
->
-  Book
-</button>

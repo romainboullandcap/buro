@@ -33,6 +33,7 @@ img {
 
 li {
   display: flex;
+  margin: 3px;
 }
 
 .desc {
@@ -40,8 +41,8 @@ li {
 }
 
 .legend {
-  grid-column: 8/10;
-  grid-row: 3/5;
+  grid-column: 12/14;
+  grid-row: 1/2;
   border: solid 1px rgba(0, 0, 0, 0.133);
   border-radius: 3px;
   background-color: #eee;
@@ -57,9 +58,10 @@ svg .rotate {
   transform-origin: center;
 }
 
-.detail {
+.detail,
+.start {
   z-index: 12;
-  grid-column: 3/ 8;
+  grid-column: 4/9;
   grid-row: 3/5;
   position: relative;
   left: 25px;

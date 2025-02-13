@@ -1,0 +1,13 @@
+<mat-card>
+  <h2>Faire une réservation</h2>
+  <mat-slide-toggle class="m1" (change)="onIsMultipleDateChange($event)"
+    >Réservation multi-jours
+  </mat-slide-toggle>
+  <button
+    mat-raised-button
+    (click)="bookMultiple()"
+    [disabled]="isBookButtonDisabled()"
+  >
+    Book
+  </button>
+</mat-card>

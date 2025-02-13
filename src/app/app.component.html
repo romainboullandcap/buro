@@ -2,18 +2,24 @@
   <a [routerLink]="['/']">
     <header class="brand-name">
       <div>
-        <h1>Buro</h1>
+        <div class="flex align-center">
+          <div>
+            <h1>Buro</h1>
+          </div>
+          @if(localstorageService.hasToken() && this.desktopList &&
+          this.desktopList.length > 0) {
+          <div>
+            <div class="example-button-container">
+              <button mat-fab extended (click)="openBookingDialog()">
+                <mat-icon>calendar_today</mat-icon>
+                Nouvelle Réservation
+              </button>
+            </div>
+          </div>
+          }
+        </div>
       </div>
       <div class="name flex align-center">
-        @if(localstorageService.hasToken() && this.desktopList &&
-        this.desktopList.length > 0) {
-        <div>
-          <button mat-mini-fab (click)="onAgendaClick()">
-            <mat-icon>calendar_today</mat-icon>
-          </button>
-        </div>
-        }
-
         <div class="ml-1">{{ localstorageService.currentUserEmail() }}</div>
         <div>
           @if(localstorageService.hasToken()) {

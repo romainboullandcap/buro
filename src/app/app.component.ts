@@ -1,7 +1,7 @@
 import { Component, inject } from "@angular/core";
 import { Router, RouterModule } from "@angular/router";
 import { LocalStorageService } from "./service/localstorage.service";
-import { AgendaDialogComponent } from "./agenda-dialog/agenda-dialog.component";
+import { AgendaComponent } from "./agenda/agenda.component";
 import { MatDialog } from "@angular/material/dialog";
 import { MatIconModule } from "@angular/material/icon";
 import { MatButtonModule } from "@angular/material/button";
@@ -31,17 +31,12 @@ export class AppComponent {
     });
   }
 
-  onAgendaClick(): void {
-    this.dialog.open(AgendaDialogComponent, {
-      width: "50vw",
-      data: { desktopList: this.desktopList },
-    });
-  }
-
   onLogoutClick() {
     localStorage.removeItem("token");
     localStorage.removeItem("email");
     this.localstorageService.setCurrentUserEmail("");
     this.router.navigate(["/login"]);
   }
+
+  openBookingDialog() {}
 }

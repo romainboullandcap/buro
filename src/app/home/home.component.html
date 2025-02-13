@@ -1,4 +1,4 @@
-<div class="flex">
+<div class="flex space-between">
   <section>
     <app-calendar [(_selectedDate)]="selectedDateCalendar"></app-calendar>
   </section>
@@ -11,12 +11,8 @@
   </section>
   <section>
     <div class="m1">
-      <mat-card>
-        <div class="m1">
-          <h2>Règles</h2>
-          <div>Vous ne pouvez avoir qu'une réservation par jour.</div>
-        </div>
-      </mat-card>
+      <app-agenda [desktopList]="desktopList()"></app-agenda>
     </div>
   </section>
+  <section></section>
 </div>
