@@ -46,6 +46,7 @@ export class AgendaComponent {
     day.setMinutes(0);
     day.setHours(0);
     day.setSeconds(0);
+    day.setMilliseconds(0);
     const res = this.desktopList()!
       .flatMap((desktop) => {
         const myRes = desktop.bookings

@@ -1,5 +1,5 @@
 <h2 mat-dialog-title>Mes prochaines réservations</h2>
-@if(desktopList().length>0){
+@if(getBookingSortedForNextWeek().length>0){
 
 <div class="table">
   <table>
@@ -16,16 +16,10 @@
         <td class="column2">{{ booking.desktopId }}</td>
       </tr>
 
-      } @empty {
-      <div class="m1">Aucune réservation</div>
       }
     </tbody>
   </table>
 </div>
-
-<!--
-<mat-card class="demo-inline-calendar-card">
-  <mat-calendar [dateClass]="dateClass" disabled="true"></mat-calendar>
-</mat-card>
--->
+} @else {
+<div class="m1">Aucune réservation</div>
 }
