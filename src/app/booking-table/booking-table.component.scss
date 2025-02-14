@@ -1,0 +1,94 @@
+.booked-date {
+  background-color: var(--color-accent);
+  border-radius: 50%;
+}
+.demo-inline-calendar-card {
+  width: 300px;
+  // cursor: default !important;
+}
+
+button {
+  //cursor: default !important;
+}
+
+.mat-calendar-body-cell :hover {
+  background-color: transparent !important;
+}
+
+.mat-calendar-body-cell button :hover {
+  background-color: transparent !important;
+}
+
+.mat-calendar-body-active :hover {
+  background-color: transparent !important;
+}
+
+.mat-focus-indicator {
+  background-color: transparent !important;
+}
+
+.table {
+  margin-top: 10px;
+  table {
+    border-spacing: 1;
+    border-collapse: collapse;
+    background: rgb(245, 245, 245);
+    border-radius: 10px;
+    overflow: hidden;
+    width: 100%;
+    margin: 0 auto;
+    position: relative;
+  }
+  table thead tr {
+    height: 50px;
+    background: var(--color-primary);
+  }
+  table tbody tr {
+    height: 50px;
+  }
+  table tbody tr:last-child {
+    border: 0;
+  }
+  table td,
+  table th {
+    text-align: left;
+  }
+
+  .table100-head th {
+    font-size: 18px;
+    color: #fff;
+    line-height: 1.2;
+    font-weight: unset;
+  }
+
+  tbody tr:nth-child(even) {
+    background-color: #e2e2e2;
+  }
+
+  tbody tr {
+    font-size: 15px;
+    color: #808080;
+    line-height: 1.2;
+    font-weight: unset;
+  }
+
+  .column1 {
+    padding-left: 40px;
+  }
+}
+
+.delete-button {
+  border-radius: 50%;
+  margin-right: 4px;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.delete-button:hover {
+  background-color: #e6e6e6;
+  cursor: pointer;
+}

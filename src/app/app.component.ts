@@ -7,6 +7,7 @@ import { MatIconModule } from "@angular/material/icon";
 import { MatButtonModule } from "@angular/material/button";
 import { DesktopService } from "./service/desktop.service";
 import { Desktop } from "./model/desktop";
+import { BookingComponent } from "./booking/booking.component";
 
 @Component({
   selector: "app-root",
@@ -38,5 +39,12 @@ export class AppComponent {
     this.router.navigate(["/login"]);
   }
 
-  openBookingDialog() {}
+  openBookingDialog(): void {
+    this.dialog.open(BookingComponent, {
+      maxWidth: "100%",
+      //height: "75%",
+      minWidth: "30%",
+      data: { desktopList: this.desktopList },
+    });
+  }
 }

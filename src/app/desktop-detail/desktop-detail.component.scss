@@ -35,3 +35,9 @@ img {
 .card {
   min-width: 450px;
 }
+
+.detail {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}

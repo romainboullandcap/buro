@@ -28,6 +28,7 @@ import { FloorplanComponent } from "../floorplan/floorplan.component";
 import { MatSlideToggleModule } from "@angular/material/slide-toggle";
 import { CalendarComponent } from "../calendar/calendar.component";
 import { AgendaComponent } from "../agenda/agenda.component";
+import { toSignal } from "@angular/core/rxjs-interop";
 
 @Component({
   selector: "app-home",
@@ -51,8 +52,8 @@ import { AgendaComponent } from "../agenda/agenda.component";
   styleUrls: ["./home.component.scss"],
 })
 export class HomeComponent {
-  desktopList = signal<Desktop[]>([]);
   desktopService: DesktopService = inject(DesktopService);
+  desktopList = toSignal(this.desktopService.desktopList$);
 
   _selectedDateCalendar!: Date;
   public set selectedDateCalendar(date: Date) {
@@ -66,7 +67,7 @@ export class HomeComponent {
     return this._selectedDateCalendar;
   }
   constructor() {
-    this.loadData();
+    this.desktopService.loadAllDesktop();
     this.selectedDateCalendar = new Date();
     this.selectedDateCalendar.setHours(0);
     this.selectedDateCalendar.setMinutes(0);
@@ -75,8 +76,6 @@ export class HomeComponent {
   }
 
   loadData() {
-    this.desktopService.getAllDesktop().subscribe((desktopList: Desktop[]) => {
-      this.desktopList.set(desktopList);
-    });
+    this.desktopService.loadAllDesktop();
   }
 }

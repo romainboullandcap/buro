@@ -1,11 +1,16 @@
+@if(!isSelectionMode()) {
 <div class="title">
   <h2>
-    Réservations pour le
-    {{ selectedDate() | date : "cccc dd/MM/YYYY" | titlecase }}
+    Réservations du
+    {{ selectedDate() | date : "cccc dd/MM" | titlecase }}
+    au
+    {{ endSelectedDate() | date : "dd/MM" | titlecase }}
   </h2>
 </div>
+}
 
 <div class="main">
+  @if(!isSelectionMode()){
   <div class="legend">
     <ul>
       <li>
@@ -22,12 +27,14 @@
       </li>
     </ul>
   </div>
+
   <div class="detail">
     <app-desktop-detail
       [selectedDate]="selectedDate()"
       (onDeleteDetail)="onDeleteFromDetail()"
     ></app-desktop-detail>
   </div>
+  }
   <div class="floorplan">
     <img id="floorplan_img" src="assets/plan.png" />
     <svg id="svg" width="1000" height="347" xmlns="http://www.w3.org/2000/svg">

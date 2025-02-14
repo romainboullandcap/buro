@@ -1,0 +1,44 @@
+@if(bookingList().length>0){
+
+<div class="table">
+  <table>
+    <thead>
+      <tr class="table100-head">
+        <th class="column1">Date</th>
+        @if(!isDesktopDetailMode()) {
+        <th class="column2">Bureau</th>
+        } @else {
+        <th class="column2">Email</th>
+        <th class="column3"></th>
+        }
+      </tr>
+    </thead>
+    <tbody>
+      @for(booking of bookingList(); track booking.id){
+      <tr>
+        <td class="column1">{{ booking.date | date : "dd/MM/YYYY" }}</td>
+        @if(!isDesktopDetailMode()){
+        <td class="column2">{{ booking.desktopId }}</td>
+        } @else {
+        <td class="column2">{{ booking.email }}</td>
+
+        } @if(isDesktopDetailMode()) {
+        <td class="column3">
+          @if(bookingService.isMyBooking(booking)) {
+          <div class="delete-button" (click)="onDeleteClick(booking)">
+            <mat-icon>delete</mat-icon>
+          </div>
+          }
+        </td>
+        }
+      </tr>
+
+      }
+    </tbody>
+  </table>
+</div>
+} @else {
+<div class="m1"></div>
+@if(customEmptyMessage()) {
+{{ customEmptyMessage() }}
+} @else { Aucune réservation } }

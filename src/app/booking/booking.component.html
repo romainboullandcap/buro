@@ -1,35 +1,80 @@
-<mat-card>
-  <h2>Faire une réservation</h2>
+<mat-dialog-content>
+  <mat-card-title>
+    <div class="flex top">
+      <div class="title">Nouvelle réservation</div>
+      <div class="m1" (click)="onCloseClick()">
+        <mat-icon>close</mat-icon>
+      </div>
+    </div>
+  </mat-card-title>
+  <mat-stepper #stepper linear="true">
+    <mat-step [stepControl]="firstFormGroup">
+      <ng-template matStepLabel>Le bureau</ng-template>
+      <app-floorplan
+        [isSelectionMode]="true"
+        [desktopList]="desktopList"
+        [selectedDate]=""
+        (onDelete)="refreshCalendarSelection()"
+      ></app-floorplan>
+      <div class="button">
+        <button
+          [disabled]="selectedDesktop.id == -1"
+          mat-flat-button
+          matStepperNext
+        >
+          Suivant
+        </button>
+      </div>
+    </mat-step>
+    <mat-step [stepControl]="secondFormGroup">
+      <ng-template matStepLabel>Date</ng-template>
+      <div class="calendar">
+        <mat-calendar
+          class="demo-inline-calendar-card"
+          [dateFilter]="dateFilter"
+          (selectedChange)="_onSelectedChange($event)"
+          [dateClass]="dateClass"
+        ></mat-calendar>
+      </div>
 
-  <div>
-    <mat-card-title>
-      <br />
-      <span
-        >Réservation multiple de<br />
-        @if(selectedDateList.length ===0) { aucun jour }
-        @if(selectedDateList.length == 1) { 1 jour } @if(selectedDateList.length
-        > 1) {
-        {{ selectedDateList.length }} jours } @if(selectedDesktop &&
-        selectedDesktop.id > 0) { <br />pour le bureau
-        {{ selectedDesktop!.name }}
-        } @else { }
-      </span>
-    </mat-card-title>
-    <mat-card class="demo-inline-calendar-card">
-      <mat-calendar
-        [dateFilter]="dateFilter"
-        (selectedChange)="_onSelectedChange($event)"
-        [(selected)]="selectedDate"
-        [dateClass]="dateClass"
-      ></mat-calendar>
-    </mat-card>
-  </div>
-
-  <button
-    mat-raised-button
-    (click)="bookMultiple()"
-    [disabled]="isBookButtonDisabled()"
-  >
-    Book
-  </button>
-</mat-card>
+      <div class="button">
+        <button
+          [disabled]="selectedDateList.length < 1 || selectedDesktop.id == -1"
+          mat-flat-button
+          matStepperNext
+          (click)="bookMultiple()"
+        >
+          Réserver
+        </button>
+      </div>
+    </mat-step>
+    <mat-step>
+      <ng-template matStepLabel>Réservation</ng-template>
+      <div class="reservation">
+        @if(isSaving()) {
+        <mat-spinner></mat-spinner>
+        } @else if(createdBookingList.length > 0) {
+        <h2>Réservation créée</h2>
+        <div class="m1 table">
+          <app-booking-table
+            [bookingList]="createdBookingList"
+          ></app-booking-table>
+          <div class="buttonClose m1">
+            <button mat-flat-button matStepperPrevious (click)="onCloseClick()">
+              Fermer
+            </button>
+          </div>
+        </div>
+        } @else if(errorMessage) {
+        <div class="m1">
+          <h2 class="error">Erreur</h2>
+          <div class="m1">{{ errorMessage }}</div>
+        </div>
+        <div class="buttonClose">
+          <button mat-button matStepperPrevious>Retour</button>
+        </div>
+        }
+      </div>
+    </mat-step>
+  </mat-stepper>
+</mat-dialog-content>

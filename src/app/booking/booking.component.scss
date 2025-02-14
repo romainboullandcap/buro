@@ -1,0 +1,41 @@
+.error {
+  color: var(--color-error);
+}
+.calendar {
+  display: flex;
+  justify-content: center;
+}
+
+.button {
+  justify-content: flex-end;
+  display: flex;
+}
+
+.reservation {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  width: 100%;
+  min-height: 200px;
+}
+
+.buttonClose {
+  margin-top: 20px;
+}
+
+.table {
+  width: 35%;
+}
+
+.top {
+  justify-content: space-between;
+  align-items: center;
+}
+
+.mat-mdc-dialog-content {
+  padding: 10px !important;
+}
+
+.title {
+  margin-left: 20px;
+}

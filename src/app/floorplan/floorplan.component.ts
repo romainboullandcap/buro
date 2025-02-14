@@ -1,4 +1,11 @@
-import { Component, inject, input, output, signal } from "@angular/core";
+import {
+  Component,
+  computed,
+  inject,
+  input,
+  output,
+  signal,
+} from "@angular/core";
 import { Desktop } from "../model/desktop";
 import { BookingService } from "../service/booking.service";
 import { DesktopService } from "../service/desktop.service";
@@ -22,21 +29,42 @@ import { CommonModule } from "@angular/common";
 })
 export class FloorplanComponent {
   selectedDate = input<Date>();
+  endSelectedDate = computed(() => {
+    if (this.selectedDate() != undefined) {
+      const endDate = new Date(this.selectedDate()!);
+      endDate.setDate(this.selectedDate()!.getDate() + 7);
+      endDate.setHours(0);
+      endDate.setMinutes(0);
+      endDate.setHours(0);
+      endDate.setSeconds(0);
+      endDate.setMilliseconds(0);
+      return endDate;
+    }
+    return undefined;
+  });
+  isSelectionMode = input<boolean>(false);
 
   bookingService = inject(BookingService);
   desktopService = inject(DesktopService);
   getBookingsForDateAndDesktop =
     this.bookingService.getBookingsForDateAndDesktop;
 
-  desktopList = input<Desktop[]>([]);
+  desktopList = input<Desktop[] | undefined>([]);
 
   selectedDesktop = toSignal(this.desktopService.selectedDesktop$);
+  selectedDesktopBooking = toSignal(
+    this.desktopService.selectedDesktopBooking$
+  );
 
   onDelete = output<void>();
 
   constructor() {}
 
   getFillColor(desktop: Desktop) {
+    if (this.isSelectionMode()) {
+      if (this.selectedDesktopBooking()?.id === desktop.id) return "#e9c46a";
+      return "#2a9d8f";
+    }
     switch (this.bookingService.getDesktopState(desktop, this.selectedDate())) {
       case DESKTOP_STATE.AVAILABLE:
         return "#2a9d8f"; // disponible
@@ -48,10 +76,10 @@ export class FloorplanComponent {
   }
 
   getStrokeColor(desktop: Desktop) {
-    if (
-      this.selectedDesktop() !== undefined &&
-      this.selectedDesktop()!.id === desktop.id
-    ) {
+    const deskt = this.isSelectionMode()
+      ? this.selectedDesktopBooking()
+      : this.selectedDesktop();
+    if (deskt !== undefined && deskt!.id === desktop.id) {
       return "#000000";
     } else {
       return this.getFillColor(desktop);
@@ -59,7 +87,11 @@ export class FloorplanComponent {
   }
 
   onDeskClick(desktop: Desktop) {
-    this.desktopService.setSelectedDesktop(desktop);
+    if (this.isSelectionMode()) {
+      this.desktopService.setSelectedDesktopBooking(desktop);
+    } else {
+      this.desktopService.setSelectedDesktop(desktop);
+    }
   }
 
   onDeleteFromDetail() {

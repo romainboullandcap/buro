@@ -1,9 +1,10 @@
-<mat-card-title><div class="m1">Choix Date</div></mat-card-title>
-<mat-card class="demo-inline-calendar-card">
-  <mat-calendar
-    [dateFilter]="dateFilter"
-    (selectedChange)="_onSelectedChange($event)"
-    [(selected)]="selectedDate"
-    [dateClass]="dateClass"
-  ></mat-calendar>
-</mat-card>
+<div class="calendar">
+  <mat-card class="demo-inline-calendar-card">
+    <mat-calendar
+      [dateFilter]="dateFilter"
+      (selectedChange)="_onSelectedChange($event)"
+      [(selected)]="selectedDate"
+      [dateClass]="dateClass"
+    ></mat-calendar>
+  </mat-card>
+</div>

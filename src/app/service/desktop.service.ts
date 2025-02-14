@@ -21,6 +21,16 @@ export class DesktopService {
   });
   selectedDesktop$ = this.selectedDesktopBS.asObservable();
 
+  selectedDesktopBookingBS = new BehaviorSubject<Desktop>({
+    id: -1,
+    angle: 0,
+    bookings: [],
+    name: "",
+    xCoord: 1,
+    yCoord: 1,
+  });
+  selectedDesktopBooking$ = this.selectedDesktopBookingBS.asObservable();
+
   desktopListBS = new BehaviorSubject<Desktop[]>([]);
   desktopList$ = this.desktopListBS.asObservable();
 
@@ -29,22 +39,21 @@ export class DesktopService {
 
   constructor() {}
 
-  getAllDesktop(): Observable<Desktop[]> {
-    return this.http.get<Desktop[]>(`${ENV.API_URL}/desktop`).pipe(
-      tap((data) => {
-        if (
-          this.selectedDesktopBS.value.id &&
-          this.selectedDesktopBS.value.id != -1
-        ) {
-          this.setSelectedDesktop(
-            data.find(
-              (desktop) => desktop.id === this.selectedDesktopBS.value.id
-            )!
-          );
-        }
-        this.desktopListBS.next(data);
-      })
-    );
+  // récupère les données depuis l'API et met à jour l'observable desktopList$
+  loadAllDesktop() {
+    this.http.get<Desktop[]>(`${ENV.API_URL}/desktop`).subscribe((data) => {
+      if (
+        this.selectedDesktopBS.value.id &&
+        this.selectedDesktopBS.value.id != -1
+      ) {
+        this.setSelectedDesktop(
+          data.find(
+            (desktop) => desktop.id === this.selectedDesktopBS.value.id
+          )!
+        );
+      }
+      this.desktopListBS.next(data);
+    });
   }
 
   async getHousingLocationById(id: number): Promise<Desktop | undefined> {
@@ -67,8 +76,8 @@ export class DesktopService {
     desktopId: number,
     email: string | null,
     dateList: Date[] | undefined
-  ) {
-    return this.http.post(`${ENV.API_URL}/desktop/bookList`, {
+  ): Observable<Booking[]> {
+    return this.http.post<Booking[]>(`${ENV.API_URL}/desktop/bookList`, {
       email: email,
       desktopId: desktopId,
       dateList: dateList,
@@ -76,7 +85,10 @@ export class DesktopService {
   }
 
   setSelectedDesktop(desktop: Desktop) {
-    console.log("setSelectedDesktop", desktop);
     this.selectedDesktopBS.next(desktop);
+  }
+
+  setSelectedDesktopBooking(desktop: Desktop) {
+    this.selectedDesktopBookingBS.next(desktop);
   }
 }

@@ -206,8 +206,7 @@ export class CalendarComponent {
   };
 
   cellOnClick(rowIndex: number, columnIndex: number, clickedDate: DateTime) {
-    //this.updateSelectedDate(this.selectedDate);
-    console.log("cellOnClick", this.selectedDate);
+    console.log("clickedDate ", clickedDate);
     if (
       columnIndex == 5 ||
       columnIndex == 6 ||
@@ -292,7 +291,7 @@ export class CalendarComponent {
     }
     this.refreshCalendarSelection();
   }
-
+  /*
   bookMultiple() {
     this.desktopService
       .bookDateList(
@@ -321,7 +320,7 @@ export class CalendarComponent {
           this.refreshCalendarSelection();
         },
       });
-  }
+  } */
 
   refreshCalendarSelection() {
     console.log("refreshCalendarSelection");
