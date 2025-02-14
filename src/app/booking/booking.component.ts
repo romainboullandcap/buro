@@ -1,4 +1,11 @@
-import { Component, Inject, input, OnDestroy } from "@angular/core";
+import {
+  Component,
+  Inject,
+  input,
+  OnDestroy,
+  viewChild,
+  viewChildren,
+} from "@angular/core";
 import { MatCardModule } from "@angular/material/card";
 import { MatDatepickerModule } from "@angular/material/datepicker";
 import { Desktop } from "../model/desktop";
@@ -39,7 +46,7 @@ import {
   MatDialogModule,
   MatDialogRef,
 } from "@angular/material/dialog";
-import { MatStepperModule } from "@angular/material/stepper";
+import { MatStepper, MatStepperModule } from "@angular/material/stepper";
 import { toSignal } from "@angular/core/rxjs-interop";
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 import { Booking } from "../model/booking";
@@ -72,13 +79,12 @@ export class BookingComponent implements OnDestroy {
   desktopService = inject(DesktopService);
   bookingService = inject(BookingService);
 
+  stepper = viewChild<MatStepper>("stepper");
+
   _selectedDateList: Date[] = [];
   public set selectedDateList(dateList: Date[]) {
     this._selectedDateList = dateList;
     console.log("this._selectedDateList", this._selectedDateList);
-    if (this._selectedDateList.length > 0) {
-      this.secondFormGroup.controls.secondCtrl.setValue("ok");
-    }
   }
 
   public get selectedDateList() {
@@ -286,6 +292,7 @@ export class BookingComponent implements OnDestroy {
 
   bookMultiple() {
     this.secondFormGroup.controls.secondCtrl.setValue("ok");
+    this.stepper()?.next();
     this.isSaving.set(true);
     this.desktopService
       .bookDateList(
