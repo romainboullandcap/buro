@@ -20,7 +20,7 @@ export class BookingService {
   }
 
   deleteBooking(booking: Booking) {
-    return this.http.delete(`${import.meta.env["API_URL"]}/booking/${booking.id}`);
+    return this.http.delete(`${ENV.API_URL}/booking/${booking.id}`);
   }
 
   getBookingsForDateAndDesktop(

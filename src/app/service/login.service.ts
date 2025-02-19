@@ -10,14 +10,14 @@ export class LoginService {
   http = inject(HttpClient);
 
   login(email: string, password: string): Observable<any> {
-    return this.http.post(`${import.meta.env["API_URL"]}/login`, {
+    return this.http.post(`${ENV.API_URL}/login`, {
       email: email,
       password: password,
     });
   }
 
   register(email: string, password: string): Observable<any> {
-    return this.http.post(`${import.meta.env["API_URL"]}/register`, {
+    return this.http.post(`${ENV.API_URL}/register`, {
       email: email,
       password: password,
     });
