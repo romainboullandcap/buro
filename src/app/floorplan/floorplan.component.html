@@ -1,14 +1,3 @@
-@if(!isSelectionMode()) {
-<div class="title">
-  <h2>
-    Réservations du
-    {{ selectedDate() | date : "cccc dd/MM" | titlecase }}
-    au
-    {{ endSelectedDate() | date : "dd/MM" | titlecase }}
-  </h2>
-</div>
-}
-
 <div class="main">
   @if(!isSelectionMode()){
   <div class="legend">

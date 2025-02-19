@@ -52,6 +52,7 @@ import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 import { Booking } from "../model/booking";
 import { BookingTableComponent } from "../booking-table/booking-table.component";
 import { SnackbarService } from "../service/snackbar.service";
+import * as luxon from "luxon";
 
 @Component({
   selector: "app-booking",
@@ -136,6 +137,7 @@ export class BookingComponent implements OnDestroy {
       if (this.selectedDesktop.id != -1) {
         this.firstFormGroup.controls.firstCtrl.setValue("ok");
       }
+      this.refreshCalendarSelection()
     });
     this.desktopService.refreshCalendarSelection$.subscribe((d) =>
       this.refreshCalendarSelection()
@@ -228,6 +230,9 @@ export class BookingComponent implements OnDestroy {
       return; // click samedi/dimanche
     // gérer le click sur les dates disabled à la main
     if (!this.isBookingAvailable(clickedDate.toJSDate())) return;
+    // gérer un click lors du choix de mois
+    if(!clickedDate.isValid) return;
+    if(clickedDate < DateTime.now()) return;
 
     console.log("selectedDateList", this.selectedDateList);
     if (!this.calendarClickTimer) {
@@ -279,15 +284,17 @@ export class BookingComponent implements OnDestroy {
     start.setMilliseconds(0);
     if (!d) return true;
     if (d.getTime() < start.getTime()) return false;
+    console.log("befoire isBookingAvailable", d)
+    if(!this.isBookingAvailable(d)) return false;
     return true;
   };
 
   isBookingAvailable(date: Date) {
-    // pas a jour lors apres un create
-    return !this.bookingService.hasBookingForDate(
+    // pas a jour apres un create
+    return !this.bookingService.hasBookingForDateAndEmail(
       date,
-      localStorage.getItem("email")!
-    );
+      localStorage.getItem("email")!) 
+      && !this.bookingService.hasBookingForDateAndDesktop(date, this.selectedDesktop.id);
   }
 
   bookMultiple() {
@@ -307,7 +314,7 @@ export class BookingComponent implements OnDestroy {
         })
       )
       .subscribe({
-        next: (createdBookingList) => {
+        next: (createdBookingList : Booking[]) => {
           this.isSaving.set(false);
           this.selectedDateList = [];
           // reset la selection précédente
@@ -324,7 +331,12 @@ export class BookingComponent implements OnDestroy {
           this._snackBar.open("Réservation effectuée", "Masquer", {
             duration: 3000,
           });
-          this.createdBookingList = createdBookingList;
+          this.createdBookingList = createdBookingList.map(booking=>{
+            console.log("parse ",""+booking.date);
+            booking.date = luxon.DateTime.fromISO(""+booking.date).toJSDate();
+            return booking;
+          }).sort((a,b)=>a.date.getTime()-b.date.getTime());
+          console.log("this.createdBookingList", this.createdBookingList);
           this.desktopService.loadAllDesktop();
         },
         error: (error) => {
@@ -364,5 +376,9 @@ export class BookingComponent implements OnDestroy {
       yCoord: 1,
     });
     this.dialogRef.close();
+  }
+
+  goFirstStep() {
+    this.stepper()?.reset();
   }
 }

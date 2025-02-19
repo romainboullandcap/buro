@@ -68,7 +68,7 @@ export class BookingService {
     }
   }
 
-  hasBookingForDate(date: Date | undefined, email: string) {
+  hasBookingForDateAndEmail(date: Date | undefined, email: string) {
     return this.list.some((desktop) =>
       desktop.bookings.some((booking) => {
         const bookDate = new Date(booking.date);
@@ -79,4 +79,16 @@ export class BookingService {
       })
     );
   }
+
+  hasBookingForDateAndDesktop(date: Date | undefined, desktopId: number) {
+    return this.list.find((desktop) => desktop.id == desktopId)?.bookings.some((booking) => {
+        const bookDate = new Date(booking.date);
+        console.log("bookDate", bookDate);
+        console.log("new Date(booking.date)", bookDate);
+        return (
+          bookDate.toDateString() === date?.toDateString()
+        );
+      })
+  }
+  
 }

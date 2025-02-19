@@ -8,6 +8,7 @@ import { MatButtonModule } from "@angular/material/button";
 import { DesktopService } from "./service/desktop.service";
 import { Desktop } from "./model/desktop";
 import { BookingComponent } from "./booking/booking.component";
+import packageJson from '../../package.json';
 
 @Component({
   selector: "app-root",
@@ -19,6 +20,7 @@ export class AppComponent {
   title = "homes";
   currentUserEmail: string | null = "";
   desktopService = inject(DesktopService);
+  version = packageJson.version;
 
   localstorageService = inject(LocalStorageService);
   desktopList: Desktop[] = [];

@@ -274,7 +274,7 @@ export class CalendarComponent {
 
   isBookingAvailable(date: Date) {
     // pas a jour lors apres un create
-    return !this.bookingService.hasBookingForDate(
+    return !this.bookingService.hasBookingForDateAndEmail(
       date,
       localStorage.getItem("email")!
     );

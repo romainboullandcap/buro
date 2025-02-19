@@ -23,6 +23,10 @@ div {
   margin: 10px;
 }
 
-.name {
+.name, .version {
   color: white;
+}
+
+.version {
+  font-size: 14px;
 }

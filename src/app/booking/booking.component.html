@@ -59,10 +59,12 @@
           <app-booking-table
             [bookingList]="createdBookingList"
           ></app-booking-table>
-          <div class="buttonClose m1">
-            <button mat-flat-button matStepperPrevious (click)="onCloseClick()">
+          <div class="button buttonClose m1">
+            <button mat-button (click)="goFirstStep()">Nouvelle réservation</button>
+            <div class="m1l"><button mat-flat-button matStepperPrevious (click)="onCloseClick()">
               Fermer
-            </button>
+            </button></div>
+            
           </div>
         </div>
         } @else if(errorMessage) {

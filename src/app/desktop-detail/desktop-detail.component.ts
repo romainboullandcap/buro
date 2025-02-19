@@ -1,4 +1,4 @@
-import { Component, inject, input, output } from "@angular/core";
+import { Component, computed, inject, input, output } from "@angular/core";
 import { Desktop } from "../model/desktop";
 import { BookingService } from "../service/booking.service";
 import { Booking } from "../model/booking";
@@ -95,7 +95,7 @@ export class DesktopDetailComponent {
         this.desktop()!,
         this.selectedDate()
       ) === DESKTOP_STATE.AVAILABLE &&
-      !this.bookingService.hasBookingForDate(
+      !this.bookingService.hasBookingForDateAndEmail(
         this.selectedDate(),
         localStorage.getItem("email")!
       )
@@ -133,4 +133,18 @@ export class DesktopDetailComponent {
       return [];
     }
   }
+
+  endSelectedDate = computed(() => {
+      if (this.selectedDate() != undefined) {
+        const endDate = new Date(this.selectedDate()!);
+        endDate.setDate(this.selectedDate()!.getDate() + 7);
+        endDate.setHours(0);
+        endDate.setMinutes(0);
+        endDate.setHours(0);
+        endDate.setSeconds(0);
+        endDate.setMilliseconds(0);
+        return endDate;
+      }
+      return undefined;
+    });
 }

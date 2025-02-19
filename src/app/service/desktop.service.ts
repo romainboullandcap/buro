@@ -80,7 +80,7 @@ export class DesktopService {
     return this.http.post<Booking[]>(`${ENV.API_URL}/desktop/bookList`, {
       email: email,
       desktopId: desktopId,
-      dateList: dateList,
+      dateList: dateList?.map(date=>date.toLocaleDateString()), // le back attend une string représentant la date uniquement
     });
   }
 
