@@ -41,7 +41,7 @@ export class DesktopService {
 
   // récupère les données depuis l'API et met à jour l'observable desktopList$
   loadAllDesktop() {
-    this.http.get<Desktop[]>(`${ENV.API_URL}/desktop`).subscribe((data) => {
+    this.http.get<Desktop[]>(`${import.meta.env["API_URL"]}/desktop`).subscribe((data) => {
       if (
         this.selectedDesktopBS.value.id &&
         this.selectedDesktopBS.value.id != -1
@@ -57,7 +57,7 @@ export class DesktopService {
   }
 
   async getHousingLocationById(id: number): Promise<Desktop | undefined> {
-    const data = await fetch(`${ENV.API_URL}/desktop/${id}`);
+    const data = await fetch(`${import.meta.env["API_URL"]}/desktop/${id}`);
     return (await data.json()) ?? {};
   }
 
@@ -65,7 +65,7 @@ export class DesktopService {
     date?.setHours(0);
     date?.setMinutes(0);
     date?.setSeconds(0);
-    return this.http.post(`${ENV.API_URL}/desktop/book`, {
+    return this.http.post(`${import.meta.env["API_URL"]}/desktop/book`, {
       email: email,
       desktopId: desktopId,
       date: date,
@@ -77,7 +77,7 @@ export class DesktopService {
     email: string | null,
     dateList: Date[] | undefined
   ): Observable<Booking[]> {
-    return this.http.post<Booking[]>(`${ENV.API_URL}/desktop/bookList`, {
+    return this.http.post<Booking[]>(`${import.meta.env["API_URL"]}/desktop/bookList`, {
       email: email,
       desktopId: desktopId,
       dateList: dateList,
