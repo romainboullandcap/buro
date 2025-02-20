@@ -42,6 +42,7 @@ export class LoginComponent {
 
   constructor() {
     if (localStorage.getItem("token") !== null) {
+      console.log("redirect home")
       this.router.navigate(["/home"]);
     }
   }
@@ -54,7 +55,7 @@ export class LoginComponent {
           this.localStorageService.setCurrentUserEmail(
             this.loginForm.value.email
           );
-          localStorage.setItem("token", res.token);
+          this.localStorageService.setToken(res.token);
           this.router.navigate(["/home"]);
         },
         error: (err) => {

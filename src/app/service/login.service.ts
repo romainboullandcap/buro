@@ -10,6 +10,7 @@ import { Router } from "@angular/router";
 })
 export class LoginService {
   
+  
   http = inject(HttpClient);
   localstorageService = inject(LocalStorageService);
   router = inject(Router);
@@ -33,5 +34,9 @@ export class LoginService {
     localStorage.removeItem("email");
     this.localstorageService.setCurrentUserEmail("");
     this.router.navigate(["/login"]);
+  }
+
+  isAuthenticated() {
+    return this.localstorageService.hasToken();
   }
 }

@@ -22,6 +22,10 @@ export class LocalStorageService {
     this.currentUserEmail.set(null);
   }
 
+  setToken(token : string){
+    localStorage.setItem("token", token);
+  }
+
   hasToken() {
     return localStorage.getItem("token") !== null;
   }
