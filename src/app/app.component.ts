@@ -21,7 +21,7 @@ export class AppComponent {
   title = "homes";
   currentUserEmail: string | null = "";
   desktopService = inject(DesktopService);
-  loginService = inject(LoginService);
+  loginService = inject(LoginService)
   version = packageJson.version;
 
   localstorageService = inject(LocalStorageService);
