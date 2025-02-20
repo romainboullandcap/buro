@@ -113,7 +113,7 @@ export class DesktopDetailComponent {
   getBookingSortedForNextWeek() {
     if (this.selectedDate() != undefined) {
       const endDate = new Date(this.selectedDate()!);
-      endDate.setDate(this.selectedDate()!.getDate() + 7);
+      endDate.setDate(this.selectedDate()!.getDate() + 8);
       endDate.setHours(0);
       endDate.setMinutes(0);
       endDate.setHours(0);
