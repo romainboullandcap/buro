@@ -9,6 +9,8 @@
 .button {
   justify-content: center;
   display: flex;
+  z-index: 15;
+    position: relative;
 }
 
 .reservation {
