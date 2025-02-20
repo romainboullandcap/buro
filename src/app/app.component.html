@@ -20,7 +20,10 @@
       </div>
     </div>
     <div class="name flex align-center">
-      <div class="ml-1">{{ localstorageService.currentUserEmail() }}</div>
+      @if(localstorageService.currentUserEmail()) {
+        <div class="ml-1">{{ localstorageService.currentUserEmail() }}</div>
+      }
+      
       <div>
         @if(localstorageService.hasToken()) {
         <button mat-mini-fab (click)="onLogoutClick()">

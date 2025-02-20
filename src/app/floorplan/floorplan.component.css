@@ -1,5 +1,5 @@
 img {
-  width: 1000px;
+  width : 1000px;
 }
 
 #floorplan_img {
@@ -8,12 +8,16 @@ img {
 }
 
 #svg {
+  width : 1000px;
+  height : 500px;
   position: relative;
   z-index: 10;
   cursor: default !important;
 }
 
 .main {
+  width : 1000px;
+  height : 500px;
   margin-top: 20px;
   margin-left: 10px;
   position: relative;
@@ -81,4 +85,13 @@ svg .rotate {
 
 .rotate {
   cursor: pointer;
+}
+
+
+@media only screen and (max-width: 1600px) {
+  .legend {
+    display: none;
+  }
+
+  
 }

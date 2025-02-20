@@ -26,8 +26,8 @@
   }
   <div class="floorplan">
     <img id="floorplan_img" src="assets/plan.png" />
-    <svg id="svg" width="1000" height="347" xmlns="http://www.w3.org/2000/svg">
-      <g>
+    <svg id="svg" xmlns="http://www.w3.org/2000/svg">
+      
         <title>Plan du site</title>
         @for (desktop of desktopList(); track desktop.id) {
         <rect
@@ -53,7 +53,6 @@
           {{ desktop.id }}
         </text>
         }
-      </g>
     </svg>
   </div>
 </div>

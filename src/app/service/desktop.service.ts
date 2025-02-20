@@ -52,6 +52,7 @@ export class DesktopService {
           )!
         );
       }
+      console.log("next desktopListBS", data)
       this.desktopListBS.next(data);
     });
   }
@@ -77,12 +78,21 @@ export class DesktopService {
     email: string | null,
     dateList: Date[] | undefined
   ): Observable<Booking[]> {
+    console.log("dateList", dateList);
     return this.http.post<Booking[]>(`${ENV.API_URL}/desktop/bookList`, {
       email: email,
       desktopId: desktopId,
-      dateList: dateList?.map(date=>date.toLocaleDateString()), // le back attend une string représentant la date uniquement
+      dateList: dateList?.map(date=>this.getDatePart(date)), // le back attend une string représentant la date uniquement
     });
   }
+
+  getDatePart(date : Date) : string {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Les mois sont indexés à partir de 0
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+}
+
 
   setSelectedDesktop(desktop: Desktop) {
     this.selectedDesktopBS.next(desktop);

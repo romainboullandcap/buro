@@ -284,7 +284,6 @@ export class BookingComponent implements OnDestroy {
     start.setMilliseconds(0);
     if (!d) return true;
     if (d.getTime() < start.getTime()) return false;
-    console.log("befoire isBookingAvailable", d)
     if(!this.isBookingAvailable(d)) return false;
     return true;
   };
@@ -305,13 +304,7 @@ export class BookingComponent implements OnDestroy {
       .bookDateList(
         this.selectedDesktop!.id,
         localStorage.getItem("email"),
-        this.selectedDateList.map((d) => {
-          d.setHours(0);
-          d.setMinutes(0);
-          d.setSeconds(0);
-          d.setMilliseconds(0);
-          return d;
-        })
+        this.selectedDateList
       )
       .subscribe({
         next: (createdBookingList : Booking[]) => {

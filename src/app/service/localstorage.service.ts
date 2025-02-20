@@ -4,7 +4,7 @@ import { Injectable, signal } from "@angular/core";
   providedIn: "root",
 })
 export class LocalStorageService {
-  currentUserEmail = signal<string>("");
+  currentUserEmail = signal<string | null>("");
 
   constructor() {
     if (localStorage.getItem("email")) {
@@ -15,6 +15,11 @@ export class LocalStorageService {
   setCurrentUserEmail(email: string) {
     localStorage.setItem("email", email);
     this.currentUserEmail.set(email);
+  }
+
+  unsetCurrentUserEmail(){
+    localStorage.removeItem("email");
+    this.currentUserEmail.set(null);
   }
 
   hasToken() {

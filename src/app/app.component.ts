@@ -9,6 +9,7 @@ import { DesktopService } from "./service/desktop.service";
 import { Desktop } from "./model/desktop";
 import { BookingComponent } from "./booking/booking.component";
 import packageJson from '../../package.json';
+import { LoginService } from "./service/login.service";
 
 @Component({
   selector: "app-root",
@@ -20,6 +21,7 @@ export class AppComponent {
   title = "homes";
   currentUserEmail: string | null = "";
   desktopService = inject(DesktopService);
+  loginService = inject(LoginService);
   version = packageJson.version;
 
   localstorageService = inject(LocalStorageService);
@@ -35,10 +37,7 @@ export class AppComponent {
   }
 
   onLogoutClick() {
-    localStorage.removeItem("token");
-    localStorage.removeItem("email");
-    this.localstorageService.setCurrentUserEmail("");
-    this.router.navigate(["/login"]);
+    this.loginService.logout();
   }
 
   openBookingDialog(): void {

@@ -45,26 +45,11 @@ export class AgendaComponent {
     return "";
   };
 
-  getBookingSortedForNextWeek(): Booking[] {
-    const dateWeek = new Date();
-    dateWeek.setDate(dateWeek.getDate() + 6);
-    const day = new Date();
-    day.setHours(0);
-    day.setMinutes(0);
-    day.setHours(0);
-    day.setSeconds(0);
-    day.setMilliseconds(0);
+  getBookingSorted(): Booking[] {
     const res = this.desktopList()!
-      .flatMap((desktop) => {
-        const myRes = desktop.bookings
-          .filter((booking) => booking.email === localStorage.getItem("email"))
-          .filter(
-            (booking) =>
-              new Date(booking.date).getTime() < dateWeek.getTime() &&
-              new Date(booking.date).getTime() >= day.getTime()
-          );
-        return myRes;
-      })
+      .flatMap((desktop) => 
+        desktop.bookings
+          .filter((booking) => booking.email === localStorage.getItem("email")))
       .filter((bookingMap) => bookingMap != null)
       .sort(
         (a, b) => new Date(a?.date!).getTime() - new Date(b?.date!).getTime()
