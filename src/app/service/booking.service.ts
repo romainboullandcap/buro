@@ -5,22 +5,25 @@ import { Booking } from "../model/booking";
 import { Desktop } from "../model/desktop";
 import { DesktopService } from "./desktop.service";
 import { DESKTOP_STATE } from "../const";
+import { ApiService } from "./api.service";
+import { catchError } from "rxjs";
 
 @Injectable({
   providedIn: "root",
 })
-export class BookingService {
+export class BookingService extends ApiService {
   http = inject(HttpClient);
   desktopService = inject(DesktopService);
   list: Desktop[] = [];
   constructor() {
+    super();
     this.desktopService.desktopList$.subscribe((d) => {
       this.list = d;
-    });
+    }, error => this.handleError(error));
   }
 
   deleteBooking(booking: Booking) {
-    return this.http.delete(`${ENV.API_URL}/booking/${booking.id}`);
+    return this.http.delete<Booking>(`${ENV.API_URL}/booking/${booking.id}`).pipe(catchError(error =>this.handleErrorObs(error)));
   }
 
   getBookingsForDateAndDesktop(

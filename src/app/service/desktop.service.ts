@@ -3,13 +3,16 @@ import { Desktop } from "../model/desktop";
 import { ENV } from "../env";
 import { HttpClient } from "@angular/common/http";
 import { Booking } from "../model/booking";
-import { BehaviorSubject, Observable, tap } from "rxjs";
+import { BehaviorSubject, catchError, Observable, tap } from "rxjs";
+import { SnackbarService } from "./snackbar.service";
+import { ApiService } from "./api.service";
 
 @Injectable({
   providedIn: "root",
 })
-export class DesktopService {
-  http = inject(HttpClient);
+export class DesktopService extends ApiService {
+  http = inject(HttpClient)
+  
 
   selectedDesktopBS = new BehaviorSubject<Desktop>({
     id: -1,
@@ -37,7 +40,7 @@ export class DesktopService {
   isMultipleDateSelection$ = new BehaviorSubject<boolean>(false);
   refreshCalendarSelection$ = new BehaviorSubject<void>(undefined);
 
-  constructor() {}
+  constructor() { super()}
 
   // récupère les données depuis l'API et met à jour l'observable desktopList$
   loadAllDesktop() {
@@ -54,13 +57,9 @@ export class DesktopService {
       }
       console.log("next desktopListBS", data)
       this.desktopListBS.next(data);
-    });
+    }, error => this.handleError(error));
   }
 
-  async getHousingLocationById(id: number): Promise<Desktop | undefined> {
-    const data = await fetch(`${ENV.API_URL}/desktop/${id}`);
-    return (await data.json()) ?? {};
-  }
 
   bookDesktop(desktopId: number, email: string | null, date: Date | undefined) {
     date?.setHours(0);
@@ -70,7 +69,7 @@ export class DesktopService {
       email: email,
       desktopId: desktopId,
       date: date,
-    });
+    }).pipe(catchError(error =>this.handleErrorObs(error)));;
   }
 
   bookDateList(
@@ -83,9 +82,10 @@ export class DesktopService {
       email: email,
       desktopId: desktopId,
       dateList: dateList?.map(date=>this.getDatePart(date)), // le back attend une string représentant la date uniquement
-    });
+    }).pipe(catchError(error =>this.handleErrorObs(error)));;
   }
 
+  // i hate date handling in js
   getDatePart(date : Date) : string {
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0'); // Les mois sont indexés à partir de 0
@@ -101,4 +101,5 @@ export class DesktopService {
   setSelectedDesktopBooking(desktop: Desktop) {
     this.selectedDesktopBookingBS.next(desktop);
   }
+  
 }
