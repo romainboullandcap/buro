@@ -271,8 +271,6 @@ export class BookingComponent implements OnDestroy {
  * @returns 
  */
   dateFilter = (d: DateTime | null): boolean => {
-    return true;
-    /*
     var day;
     if (d) {
       day = d.day;
@@ -285,7 +283,7 @@ export class BookingComponent implements OnDestroy {
     // don't allow booking in the past
     if (d.startOf("day") < DateTime.now().startOf("day")) return false;
     if (!this.isBookingAvailable(d)) return false;
-    return true;*/
+    return true;
   };
 
   isBookingAvailable(date: DateTime) {
