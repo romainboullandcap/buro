@@ -25,6 +25,20 @@ import {
   MAT_DATE_RANGE_SELECTION_STRATEGY,
   DefaultMatCalendarRangeStrategy,
 } from "@angular/material/datepicker";
+import { provideMomentDateAdapter } from "@angular/material-moment-adapter";
+import { provideLuxonDateAdapter } from "@angular/material-luxon-adapter";
+
+export const MY_FORMATS = {
+  parse: {
+    dateInput: "dd",
+  },
+  display: {
+    dateInput: "EEEE d MMMM",
+    monthYearLabel: "MMM y",
+    dateA11yLabel: "dd",
+    monthYearA11yLabel: "dd YYYY",
+  },
+};
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -37,6 +51,8 @@ export const appConfig: ApplicationConfig = {
     { provide: MAT_DATE_LOCALE, useValue: "fr-FR" },
     { provide: LOCALE_ID, useValue: "fr-FR" },
     provideNativeDateAdapter(),
+
+    provideLuxonDateAdapter(MY_FORMATS),
     {
       provide: MAT_DATE_RANGE_SELECTION_STRATEGY,
       useClass: DefaultMatCalendarRangeStrategy,

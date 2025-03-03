@@ -23,3 +23,26 @@ span {
 .flex {
   justify-content: space-evenly;
 }
+
+.container {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.dateInput {
+  display: flex;
+  justify-content: center;
+}
+
+mat-form-field {
+  margin-left : 30px;
+  margin-right : 30px;
+  font-size: 25px !important;
+  width: 350px;
+}
+
+
+.mdc-fab {
+  box-shadow: none !important;
+}

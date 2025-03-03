@@ -70,10 +70,30 @@ html {
   align-items: center;
 }
 
+.space-evenly {
+  align-content: space-evenly;
+}
+
 .w100 {
   width: 100%;
 }
 
 .ml-1 {
   margin-left: 10px;
+}
+
+
+// Customize the entire app. Change :root to your selector if you want to scope the styles.
+:root {
+  @include mat.datepicker-overrides((
+    
+    calendar-date-selected-state-text-color: var(--color-error),
+    
+  ));
+}
+
+
+.booked-date {
+  background-color: var(--color-accent) !important;
+  border-radius: 50%;
 }

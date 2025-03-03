@@ -32,14 +32,11 @@ import {
   ReactiveFormsModule,
   Validators,
 } from "@angular/forms";
-import { DateAdapter, provideNativeDateAdapter } from "@angular/material/core";
+import { DateAdapter } from "@angular/material/core";
 import { BookingService } from "../service/booking.service";
 import { MatButtonModule } from "@angular/material/button";
 import { MatIconModule } from "@angular/material/icon";
 import { FloorplanComponent } from "../floorplan/floorplan.component";
-import { MatSlideToggleModule } from "@angular/material/slide-toggle";
-import { CalendarComponent } from "../calendar/calendar.component";
-import { AgendaComponent } from "../agenda/agenda.component";
 import { DateTime } from "luxon";
 import {
   MAT_DIALOG_DATA,
@@ -76,16 +73,15 @@ import * as luxon from "luxon";
   styleUrl: "./booking.component.scss",
 })
 export class BookingComponent implements OnDestroy {
-  dateAdapter = inject(DateAdapter<Date>);
+  dateAdapter = inject(DateAdapter<DateTime>);
   desktopService = inject(DesktopService);
   bookingService = inject(BookingService);
 
   stepper = viewChild<MatStepper>("stepper");
 
-  _selectedDateList: Date[] = [];
-  public set selectedDateList(dateList: Date[]) {
+  _selectedDateList: DateTime[] = [];
+  public set selectedDateList(dateList: DateTime[]) {
     this._selectedDateList = dateList;
-    console.log("this._selectedDateList", this._selectedDateList);
   }
 
   public get selectedDateList() {
@@ -132,12 +128,11 @@ export class BookingComponent implements OnDestroy {
       yCoord: 1,
     });
     this.desktopService.selectedDesktopBooking$.subscribe((v) => {
-      console.log("this.desktopService.selectedDesktopBooking$", v);
       this.selectedDesktop = v;
       if (this.selectedDesktop.id != -1) {
         this.firstFormGroup.controls.firstCtrl.setValue("ok");
       }
-      this.refreshCalendarSelection()
+      this.refreshCalendarSelection();
     });
     this.desktopService.refreshCalendarSelection$.subscribe((d) =>
       this.refreshCalendarSelection()
@@ -166,7 +161,6 @@ export class BookingComponent implements OnDestroy {
     const cellList = document.getElementsByClassName(
       "mat-calendar-body-cell-container"
     );
-    //console.log("cellList", cellList.length);
     Array.prototype.forEach.call(cellList, (testElement: HTMLElement) => {
       testElement!.onclick = (ev: MouseEvent) => {
         this.cellOnClick(
@@ -184,16 +178,17 @@ export class BookingComponent implements OnDestroy {
 
   selectedDateRange: DateRange<Date | null> = new DateRange(null, null);
 
-  _onSelectedChange(date: any): void {
-    console.log("click", date);
-
+  _onSelectedChange(date: DateTime | null): void {
+    if (!date) return;
     this.calendarClickTimer = true;
     if (!this.hasDate(date)) {
       //console.log("new date");
       this.addSelectedDate(date);
     } else {
       this.selectedDateList.splice(
-        this.selectedDateList.findIndex((x) => x.getTime() === date.getTime()),
+        this.selectedDateList.findIndex((x) => x.hasSame(date, "day") &&
+        x.hasSame(date, "month") &&
+        x.hasSame(date, "year")),
         1
       );
     }
@@ -201,19 +196,21 @@ export class BookingComponent implements OnDestroy {
     this.setGridCellOnClick();
     setTimeout(() => (this.calendarClickTimer = false), 200);
   }
-  addSelectedDate(date: any) {
+  addSelectedDate(date: DateTime) {
     console.log("add date", date);
     this.selectedDateList.push(date);
     this.selectedDateList = [...this.selectedDateList];
   }
 
-  hasDate(inputDate: Date) {
-    return this.selectedDateList.some(
-      (date) => date.getTime() === inputDate.getTime()
-    );
+  hasDate(inputDate: DateTime | null) {
+    if (!inputDate) return false;
+    return this.selectedDateList.some((date) =>
+    date.hasSame(inputDate, "day") &&
+    date.hasSame(inputDate, "month") &&
+    date.hasSame(inputDate, "year"))
   }
 
-  dateClass: MatCalendarCellClassFunction<Date> = (cellDate, view) => {
+  dateClass: MatCalendarCellClassFunction<DateTime> = (cellDate, view) => {
     if (this.hasDate(cellDate) && view === "month") {
       return "booked-date";
     }
@@ -229,38 +226,34 @@ export class BookingComponent implements OnDestroy {
     )
       return; // click samedi/dimanche
     // gérer le click sur les dates disabled à la main
-    if (!this.isBookingAvailable(clickedDate.toJSDate())) return;
+    if (!this.isBookingAvailable(clickedDate)) return;
     // gérer un click lors du choix de mois
-    if(!clickedDate.isValid) return;
-    if(clickedDate < DateTime.now()) return;
+    if (!clickedDate.isValid) return;
+    if (clickedDate < DateTime.now()) return;
 
     console.log("selectedDateList", this.selectedDateList);
     if (!this.calendarClickTimer) {
       if (this.isFirstClick) {
         this.isFirstClick = false;
         // ajouter la date actuelle à la selection
-        this.addSelectedDate(clickedDate.toJSDate());
+        this.addSelectedDate(clickedDate);
         console.log(
           "first click add",
-          this.selectedDateList.map((d) => d.getTime())
+          this.selectedDateList.map((d) => d)
         );
       } else {
-        const index = this.selectedDateList.findIndex(
-          (x) => x.getTime() === clickedDate.toJSDate().getTime()
-        );
+        const index = this.selectedDateList.findIndex((x) => x == clickedDate);
         if (index != -1) {
           //console.log("dans");
           // si la date cliquée est dans la sélection
           this.selectedDateList.splice(
-            this.selectedDateList.findIndex(
-              (x) => x.getTime() === clickedDate.toJSDate().getTime()
-            ),
+            this.selectedDateList.findIndex((x) => x == clickedDate),
             1
           );
           this.selectedDateList = [...this._selectedDateList];
         } else {
           // ajouter la date a la selection
-          this.addSelectedDate(clickedDate.toJSDate());
+          this.addSelectedDate(clickedDate);
         }
       }
 
@@ -272,28 +265,35 @@ export class BookingComponent implements OnDestroy {
     }
   }
 
-  dateFilter = (d: Date | null): boolean => {
-    const day = (d || new Date()).getDay();
+/**
+ * Renvoie vrai si la date peut être selectionnée
+ * @param d date de la cellule
+ * @returns 
+ */
+  dateFilter = (d: DateTime | null): boolean => {
+    return true;
+    /*
+    var day;
+    if (d) {
+      day = d.day;
+    } else {
+      day = new Date().getDay();
+    }
     // Prevent Saturday and Sunday from being selected.
     if (day === 0 || day === 6) return false;
-    const start = new Date();
-    start.setHours(0);
-    start.setMinutes(0);
-    start.setHours(0);
-    start.setSeconds(0);
-    start.setMilliseconds(0);
     if (!d) return true;
-    if (d.getTime() < start.getTime()) return false;
-    if(!this.isBookingAvailable(d)) return false;
-    return true;
+    // don't allow booking in the past
+    if (d.startOf("day") < DateTime.now().startOf("day")) return false;
+    if (!this.isBookingAvailable(d)) return false;
+    return true;*/
   };
 
-  isBookingAvailable(date: Date) {
+  isBookingAvailable(date: DateTime) {
     // pas a jour apres un create
-    return !this.bookingService.hasBookingForDateAndEmail(
-      date,
-      localStorage.getItem("email")!) 
-      && !this.bookingService.hasBookingForDateAndDesktop(date, this.selectedDesktop.id);
+    return (
+      !this.bookingService.hasBookingForDateAndCurrentUser(date) &&
+      !this.bookingService.hasBookingForDateAndDesktop(date, this.selectedDesktop.id)
+    );
   }
 
   bookMultiple() {
@@ -301,13 +301,10 @@ export class BookingComponent implements OnDestroy {
     this.stepper()?.next();
     this.isSaving.set(true);
     this.desktopService
-      .bookDateList(
-        this.selectedDesktop!.id,
-        localStorage.getItem("email"),
-        this.selectedDateList
-      )
+      .bookDateList(this.selectedDesktop!.id, this.selectedDateList)
       .subscribe({
-        next: (createdBookingList : Booking[]) => {
+        next: (createdBookingList: Booking[]) => {
+          console.log("created", createdBookingList);
           this.isSaving.set(false);
           this.selectedDateList = [];
           // reset la selection précédente
@@ -324,11 +321,14 @@ export class BookingComponent implements OnDestroy {
           this._snackBar.open("Réservation effectuée", "Masquer", {
             duration: 3000,
           });
-          this.createdBookingList = createdBookingList.map(booking=>{
-            console.log("parse ",""+booking.date);
-            booking.date = luxon.DateTime.fromISO(""+booking.date).toJSDate();
-            return booking;
-          }).sort((a,b)=>a.date.getTime()-b.date.getTime());
+          this.createdBookingList = createdBookingList
+            .map((booking) => {
+              booking.date = luxon.DateTime.fromISO(
+                booking.date.toString()
+              );
+              return booking;
+            })
+            .sort((a, b) => a.date.toMillis() - b.date.toMillis());
           console.log("this.createdBookingList", this.createdBookingList);
           this.desktopService.loadAllDesktop();
         },

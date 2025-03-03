@@ -12,17 +12,15 @@ export class SnackbarService {
   constructor() {}
 
   disable() {
-    console.log("disable notif");
     this.isEnabled = false;
   }
   enable() {
-    console.log("enable notif");
     this.isEnabled = true;
   }
 
   open(message: string, action?: string, config?: MatSnackBarConfig) {
-    if(!config) {
-      config = { duration : 5000};
+    if (!config) {
+      config = { duration: 5000 };
     }
     if (this.isEnabled) {
       this.snackbarService.open(message, action, config);

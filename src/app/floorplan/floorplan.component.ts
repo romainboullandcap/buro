@@ -15,6 +15,7 @@ import { MatSlideToggleModule } from "@angular/material/slide-toggle";
 import { FormsModule } from "@angular/forms";
 import { DESKTOP_STATE } from "../const";
 import { CommonModule } from "@angular/common";
+import { DateTime } from "luxon";
 
 @Component({
   selector: "app-floorplan",
@@ -28,16 +29,12 @@ import { CommonModule } from "@angular/common";
   styleUrls: ["floorplan.component.css"],
 })
 export class FloorplanComponent {
-  selectedDate = input<Date>();
+  selectedDate = input<DateTime | undefined | null>();
   endSelectedDate = computed(() => {
     if (this.selectedDate() != undefined) {
-      const endDate = new Date(this.selectedDate()!);
-      endDate.setDate(this.selectedDate()!.getDate() + 7);
-      endDate.setHours(0);
-      endDate.setMinutes(0);
-      endDate.setHours(0);
-      endDate.setSeconds(0);
-      endDate.setMilliseconds(0);
+      let endDate = DateTime.fromJSDate(this.selectedDate()!.toJSDate());
+      endDate.startOf("day");
+      endDate = endDate.plus({ days: 7 });
       return endDate;
     }
     return undefined;
@@ -46,8 +43,6 @@ export class FloorplanComponent {
 
   bookingService = inject(BookingService);
   desktopService = inject(DesktopService);
-  getBookingsForDateAndDesktop =
-    this.bookingService.getBookingsForDateAndDesktop;
 
   desktopList = input<Desktop[] | undefined>([]);
 
@@ -65,7 +60,9 @@ export class FloorplanComponent {
       if (this.selectedDesktopBooking()?.id === desktop.id) return "#e9c46a";
       return "#2a9d8f";
     }
-    switch (this.bookingService.getDesktopState(desktop, this.selectedDate())) {
+    switch (
+      this.bookingService.getDesktopState(desktop, this.selectedDate()!)
+    ) {
       case DESKTOP_STATE.AVAILABLE:
         return "#2a9d8f"; // disponible
       case DESKTOP_STATE.BOOKED:
@@ -80,7 +77,7 @@ export class FloorplanComponent {
       ? this.selectedDesktopBooking()
       : this.selectedDesktop();
     if (deskt !== undefined && deskt!.id === desktop.id) {
-      return "#000000";
+      return "#ff0000";
     } else {
       return this.getFillColor(desktop);
     }

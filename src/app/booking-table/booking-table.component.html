@@ -16,11 +16,11 @@
     <tbody>
       @for(booking of bookingList(); track booking.id){
       <tr>
-        <td class="column1">{{ booking.date | date : "dd/MM/YYYY" }}</td>
+        <td class="column1">{{ booking.date.toJSDate() | date : "dd/MM/YYYY" }}</td>
         @if(!isDesktopDetailMode()){
         <td class="column2">{{ booking.desktopId }}</td>
         } @else {
-        <td class="column2">{{ booking.email }}</td>
+        <td class="column2">{{ booking.user.email }}</td>
 
         } @if(isDesktopDetailMode()) {
         <td class="column3">

@@ -1,7 +1,7 @@
 <mat-dialog-content>
   <mat-card-title>
     <div class="flex top">
-      <div class="title">Nouvelle réservation</div>
+      <h2 class="title">Nouvelle réservation</h2>
       <div class="m1" (click)="onCloseClick()">
         <mat-icon>close</mat-icon>
       </div>
@@ -30,7 +30,7 @@
       <ng-template matStepLabel>Date</ng-template>
       <div class="calendar">
         <mat-calendar
-          class="demo-inline-calendar-card"
+          class="inline-calendar"
           [dateFilter]="dateFilter"
           (selectedChange)="_onSelectedChange($event)"
           [dateClass]="dateClass"

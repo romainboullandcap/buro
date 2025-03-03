@@ -7,6 +7,8 @@ import { DesktopService } from "./desktop.service";
 import { DESKTOP_STATE } from "../const";
 import { ApiService } from "./api.service";
 import { catchError } from "rxjs";
+import { LoginService } from "./login.service";
+import { DateTime } from "luxon";
 
 @Injectable({
   providedIn: "root",
@@ -14,25 +16,37 @@ import { catchError } from "rxjs";
 export class BookingService extends ApiService {
   http = inject(HttpClient);
   desktopService = inject(DesktopService);
+  loginService = inject(LoginService);
+
   list: Desktop[] = [];
+
   constructor() {
     super();
-    this.desktopService.desktopList$.subscribe((d) => {
-      this.list = d;
-    }, error => this.handleError(error));
+    this.desktopService.desktopList$.subscribe(
+      (d) => {
+        this.list = d;
+      },
+      (error) => this.handleErrorObs(error)
+    );
   }
 
   deleteBooking(booking: Booking) {
-    return this.http.delete<Booking>(`${ENV.API_URL}/booking/${booking.id}`).pipe(catchError(error =>this.handleErrorObs(error)));
+    return this.http
+      .delete<Booking>(`${ENV.API_URL}/booking/${booking.id}`)
+      .pipe(catchError((error) => this.handleErrorObs(error)));
   }
 
-  getBookingsForDateAndDesktop(
+  getBookingsForDate(
     bookings: Booking[],
-    selectedDate: Date | undefined
+    selectedDate: DateTime | undefined
   ): Booking[] {
     if (selectedDate) {
-      const result = bookings.filter((d) =>
-        BookingService.dateFilterPredicate(d, selectedDate)
+      console.log("bookings", bookings);
+      const result = bookings.filter(
+        (booking) =>
+          booking.date.hasSame(selectedDate, "day") &&
+          booking.date.hasSame(selectedDate, "month") &&
+          booking.date.hasSame(selectedDate, "year")
       );
       return result;
     } else {
@@ -40,28 +54,21 @@ export class BookingService extends ApiService {
     }
   }
 
-  static dateFilterPredicate = (booking: Booking, date: Date) => {
-    const bookingDate = new Date(booking.date);
-    bookingDate.setHours(0, 0, 0);
-    const eventBookingDate = new Date(date);
-    eventBookingDate.setHours(0, 0);
-    return bookingDate.toDateString() === eventBookingDate.toDateString();
-  };
-
   isMyBooking(booking: Booking) {
-    return localStorage.getItem("email") === booking.email;
+    return this.loginService.currentUser()?.id === booking.userId;
   }
 
   getDesktopState(
     desktop: Desktop,
-    selectedDate: Date | undefined
+    selectedDate: DateTime | undefined
   ): DESKTOP_STATE {
-    const bookingForDesktop = this.getBookingsForDateAndDesktop(
+    const bookingForDesktop = this.getBookingsForDate(
       desktop.bookings,
       selectedDate
     );
+    console.log("bookingForDesktop", desktop.id, bookingForDesktop);
     if (bookingForDesktop.length > 0) {
-      if (bookingForDesktop.some(this.isMyBooking)) {
+      if (bookingForDesktop.some((d) => this.isMyBooking(d))) {
         return DESKTOP_STATE.BOOKED_FOR_ME;
       } else {
         return DESKTOP_STATE.BOOKED;
@@ -71,27 +78,28 @@ export class BookingService extends ApiService {
     }
   }
 
-  hasBookingForDateAndEmail(date: Date | undefined, email: string) {
+  hasBookingForDateAndCurrentUser(date: DateTime) {
     return this.list.some((desktop) =>
       desktop.bookings.some((booking) => {
-        const bookDate = new Date(booking.date);
         return (
-          bookDate.toDateString() === date?.toDateString() &&
-          booking.email === email
+          booking.date.hasSame(date, "day") &&
+          booking.date.hasSame(date, "month") &&
+          booking.date.hasSame(date, "year") &&
+          booking.userId === this.loginService.currentUser()?.id
         );
       })
     );
   }
 
-  hasBookingForDateAndDesktop(date: Date | undefined, desktopId: number) {
-    return this.list.find((desktop) => desktop.id == desktopId)?.bookings.some((booking) => {
-        const bookDate = new Date(booking.date);
-        console.log("bookDate", bookDate);
-        console.log("new Date(booking.date)", bookDate);
+  hasBookingForDateAndDesktop(date: DateTime, desktopId: number) {
+    return this.list
+      .find((desktop) => desktop.id == desktopId)
+      ?.bookings.some((booking) => {
         return (
-          bookDate.toDateString() === date?.toDateString()
+          booking.date.hasSame(date, "day") &&
+          booking.date.hasSame(date, "month") &&
+          booking.date.hasSame(date, "year")
         );
-      })
+      });
   }
-  
 }

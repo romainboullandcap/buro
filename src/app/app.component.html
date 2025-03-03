@@ -20,12 +20,12 @@
       </div>
     </div>
     <div class="name flex align-center">
-      @if(localstorageService.currentUserEmail()) {
-        <div class="ml-1">{{ localstorageService.currentUserEmail() }}</div>
+      @if(loginService.currentUser()) {
+        <div class="ml-1">{{ loginService.currentUser()?.email }}</div>
       }
       
       <div>
-        @if(localstorageService.hasToken() && localstorageService.currentUserEmail()) {
+        @if(loginService.isAuthenticated()) {
         <button mat-mini-fab (click)="onLogoutClick()">
           <mat-icon>logout</mat-icon>
         </button>

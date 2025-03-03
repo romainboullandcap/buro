@@ -15,6 +15,7 @@ import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatInputModule } from "@angular/material/input";
 import { DESKTOP_STATE } from "../const";
 import { BookingTableComponent } from "../booking-table/booking-table.component";
+import { DateTime } from "luxon";
 
 @Component({
   selector: "app-desktop-detail",
@@ -33,7 +34,7 @@ import { BookingTableComponent } from "../booking-table/booking-table.component"
   styleUrl: "desktop-detail.component.scss",
 })
 export class DesktopDetailComponent {
-  selectedDate = input<Date>();
+  selectedDate = input<DateTime | undefined | null>();
   onDeleteDetail = output<void>();
 
   bookingService = inject(BookingService);
@@ -70,7 +71,7 @@ export class DesktopDetailComponent {
       .bookDesktop(
         desktopId,
         localStorage.getItem("email"),
-        this.selectedDate()
+        this.selectedDate()!
       )
       .subscribe({
         next: () => {
@@ -83,68 +84,52 @@ export class DesktopDetailComponent {
       });
   }
 
-  isCurrentDate(date: Date) {
-    date = new Date(date);
-    const now = new Date();
-    return date.toDateString() === now.toDateString();
-  }
-
   isBookingAvailable() {
     return (
       this.bookingService.getDesktopState(
         this.desktop()!,
-        this.selectedDate()
+        this.selectedDate()!
       ) === DESKTOP_STATE.AVAILABLE &&
-      !this.bookingService.hasBookingForDateAndEmail(
-        this.selectedDate(),
-        localStorage.getItem("email")!
-      )
+      !this.bookingService.hasBookingForDateAndCurrentUser(this.selectedDate()!)
     );
   }
 
   isTodayBooking(booking: Booking) {
     return (
-      new Date(booking.date).getDate() === new Date().getDate() &&
-      new Date(booking.date).getMonth() === new Date().getMonth() &&
-      new Date(booking.date).getFullYear() === new Date().getFullYear()
+      DateTime.now().hasSame(booking.date, "day") &&
+      DateTime.now().hasSame(booking.date, "month") &&
+      DateTime.now().hasSame(booking.date, "year")
     );
   }
   // selectedDate + 7J
   getBookingSortedForNextWeek() {
+    console.log("getBookingSortedForNextWeek", this.selectedDate());
     if (this.selectedDate() != undefined) {
-      const endDate = new Date(this.selectedDate()!);
-      endDate.setDate(this.selectedDate()!.getDate() + 8);
-      endDate.setHours(0);
-      endDate.setMinutes(0);
-      endDate.setHours(0);
-      endDate.setSeconds(0);
-      endDate.setMilliseconds(0);
+      let endDate = DateTime.fromJSDate(this.selectedDate()!.toJSDate());
+      endDate.startOf("day");
+      endDate = endDate.plus({ days: 8 });
       const res = this.desktop()!
-        .bookings.sort(
-          (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
-        )
+        .bookings.sort((a, b) => a.date.diff(b.date).toMillis())
         .filter(
           (booking) =>
-            new Date(booking.date).getTime() < endDate.getTime() &&
-            new Date(booking.date).getTime() >= this.selectedDate()!.getTime()
+            booking.date < endDate && booking.date >= this.selectedDate()!
         );
-      return res.slice();
+
+      const ss = res.slice();
+      console.log("ss", ss);
+      return res;
     } else {
       return [];
     }
   }
 
   endSelectedDate = computed(() => {
-      if (this.selectedDate() != undefined) {
-        const endDate = new Date(this.selectedDate()!);
-        endDate.setDate(this.selectedDate()!.getDate() + 7);
-        endDate.setHours(0);
-        endDate.setMinutes(0);
-        endDate.setHours(0);
-        endDate.setSeconds(0);
-        endDate.setMilliseconds(0);
-        return endDate;
-      }
-      return undefined;
-    });
+    if (this.selectedDate() != undefined) {
+      let endDate = DateTime.fromJSDate(this.selectedDate()!.toJSDate());
+      endDate.startOf("day");
+      endDate = endDate.plus({ days: 7 });
+      return endDate;
+    }
+    return undefined;
+  });
 }

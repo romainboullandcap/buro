@@ -1,14 +1,11 @@
 <div class="container flex p1 m1">
   
   @if(desktop()!.id > 0 && !isMultipleDateSelection) {
-    <div class="title">
-       
-    </div>
   <div class="detail m1 p1 flex card">
-    <h1>Bureau {{ desktop()!.id }} : réservations du
-      {{ selectedDate() | date : "cccc dd/MM" | titlecase }}
+    <span class="desktopTitle">Bureau {{ desktop()!.id }} : réservations du
+      {{ selectedDate()?.toJSDate()| date : "cccc dd/MM" | titlecase }}
       au
-      {{ endSelectedDate() | date : "dd/MM" | titlecase }}</h1>
+      {{ endSelectedDate()?.toJSDate() | date : "dd/MM" | titlecase }}</span>
     <div class="list">
       <app-booking-table
         [isDesktopDetailMode]="true"

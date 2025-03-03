@@ -41,23 +41,13 @@ export class LoginComponent {
   _snackBar = inject(MatSnackBar);
 
   constructor() {
-    if (localStorage.getItem("token") !== null) {
-      console.log("redirect home")
-      this.router.navigate(["/home"]);
-    }
+    this.loginService.tryAuthWithToken();
   }
 
   loginClick() {
     this.loginService
       .login(this.loginForm.value.email, this.loginForm.value.password)
       .subscribe({
-        next: (res) => {
-          this.localStorageService.setCurrentUserEmail(
-            this.loginForm.value.email
-          );
-          this.localStorageService.setToken(res.token);
-          this.router.navigate(["/home"]);
-        },
         error: (err) => {
           this.loginForm.reset();
           this.errorMessage = "Erreur à la connexion";

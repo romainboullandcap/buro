@@ -1,15 +1,32 @@
-<div class="flex space-between">
-  <section>
-    <app-calendar [(_selectedDate)]="selectedDateCalendar"></app-calendar>
-  </section>
-  <section>
+<div class="flex space-evenly">
+  <div class="container">
+    <div class="dateInput">
+      <button mat-fab (click)="onPreviousDayClick()" class="mat-elevation-z0">
+        <mat-icon>arrow_back_ios_new</mat-icon>
+      </button>
+      <form [formGroup]="dateSelectionForm">
+      <mat-form-field>      
+        <input
+          matInput
+          [matDatepicker]="picker"
+          formControlName="selectedDateCalendar"
+        />
+        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
+    </form>
+      <button mat-fab (click)="onNextDayClick()">
+        <mat-icon>arrow_forward_ios_new</mat-icon>
+      </button>
+    </div>
+    
     <app-floorplan
       [desktopList]="desktopList()"
-      [selectedDate]="selectedDateCalendar"
+      [selectedDate]="dateSelectionForm.value.selectedDateCalendar"
       (onDelete)="loadData()"
       [isSelectionMode]="false"
     ></app-floorplan>
-  </section>
+  </div>
   <section>
     <div class="m1">
       <app-agenda [desktopList]="desktopList()"></app-agenda>

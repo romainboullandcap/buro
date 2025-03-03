@@ -7,6 +7,7 @@ import { MatIconModule } from "@angular/material/icon";
 import { DesktopService } from "../service/desktop.service";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { MatButtonModule } from "@angular/material/button";
+import { UserService } from "../service/user.service";
 
 @Component({
   selector: "app-booking-table",
@@ -18,6 +19,7 @@ export class BookingTableComponent {
   bookingService = inject(BookingService);
   desktopService = inject(DesktopService);
   _snackBar = inject(MatSnackBar);
+  userService = inject(UserService);
 
   bookingList = input<Booking[]>([]);
   isDesktopDetailMode = input<boolean>(false);

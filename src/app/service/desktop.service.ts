@@ -6,13 +6,13 @@ import { Booking } from "../model/booking";
 import { BehaviorSubject, catchError, Observable, tap } from "rxjs";
 import { SnackbarService } from "./snackbar.service";
 import { ApiService } from "./api.service";
+import { DateTime } from "luxon";
 
 @Injectable({
   providedIn: "root",
 })
 export class DesktopService extends ApiService {
-  http = inject(HttpClient)
-  
+  http = inject(HttpClient);
 
   selectedDesktopBS = new BehaviorSubject<Desktop>({
     id: -1,
@@ -40,59 +40,75 @@ export class DesktopService extends ApiService {
   isMultipleDateSelection$ = new BehaviorSubject<boolean>(false);
   refreshCalendarSelection$ = new BehaviorSubject<void>(undefined);
 
-  constructor() { super()}
+  constructor() {
+    super();
+  }
 
   // récupère les données depuis l'API et met à jour l'observable desktopList$
   loadAllDesktop() {
-    this.http.get<Desktop[]>(`${ENV.API_URL}/desktop`).subscribe((data) => {
-      if (
-        this.selectedDesktopBS.value.id &&
-        this.selectedDesktopBS.value.id != -1
-      ) {
-        this.setSelectedDesktop(
-          data.find(
-            (desktop) => desktop.id === this.selectedDesktopBS.value.id
-          )!
+    this.http.get<Desktop[]>(`${ENV.API_URL}/desktop`).subscribe(
+      (data) => {
+        data.forEach((desktop) =>
+          desktop.bookings.forEach((booking) => {
+            booking.date = DateTime.fromISO(booking.date.toString()).startOf(
+              "day"
+            );
+          })
         );
-      }
-      console.log("next desktopListBS", data)
-      this.desktopListBS.next(data);
-    }, error => this.handleError(error));
+        if (
+          this.selectedDesktopBS.value.id &&
+          this.selectedDesktopBS.value.id != -1
+        ) {
+          this.setSelectedDesktop(
+            data.find(
+              (desktop) => desktop.id === this.selectedDesktopBS.value.id
+            )!
+          );
+        }
+        console.log("next desktopListBS", data);
+        this.desktopListBS.next(data);
+      },
+      (error) => this.handleErrorObs(error)
+    );
   }
 
-
-  bookDesktop(desktopId: number, email: string | null, date: Date | undefined) {
-    date?.setHours(0);
-    date?.setMinutes(0);
-    date?.setSeconds(0);
-    return this.http.post(`${ENV.API_URL}/desktop/book`, {
-      email: email,
-      desktopId: desktopId,
-      date: date,
-    }).pipe(catchError(error =>this.handleErrorObs(error)));;
+  bookDesktop(
+    desktopId: number,
+    email: string | null,
+    date: DateTime | undefined
+  ) {
+    date?.startOf("day");
+    return this.http
+      .post(`${ENV.API_URL}/desktop/book`, {
+        email: email,
+        desktopId: desktopId,
+        date: date,
+      })
+      .pipe(catchError((error) => this.handleErrorObs(error)));
   }
 
   bookDateList(
     desktopId: number,
-    email: string | null,
-    dateList: Date[] | undefined
+    dateList: DateTime[] | undefined
   ): Observable<Booking[]> {
-    console.log("dateList", dateList);
-    return this.http.post<Booking[]>(`${ENV.API_URL}/desktop/bookList`, {
-      email: email,
-      desktopId: desktopId,
-      dateList: dateList?.map(date=>this.getDatePart(date)), // le back attend une string représentant la date uniquement
-    }).pipe(catchError(error =>this.handleErrorObs(error)));;
+    return this.http
+      .post<Booking[]>(`${ENV.API_URL}/desktop/bookList`, {
+        desktopId: desktopId,
+        dateList: dateList?.map((date) => this.getDatePart(date)), // le back attend une string représentant la date uniquement
+      })
+      .pipe(catchError((error) => this.handleErrorObs(error)));
   }
 
   // i hate date handling in js
-  getDatePart(date : Date) : string {
+  getDatePart(date: DateTime): string {
+    /*
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0'); // Les mois sont indexés à partir de 0
     const day = String(date.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
-}
-
+    
+    return `${year}-${month}-${day}`; */
+    return date.toLocaleString(DateTime.DATE_SHORT);
+  }
 
   setSelectedDesktop(desktop: Desktop) {
     this.selectedDesktopBS.next(desktop);
@@ -101,5 +117,4 @@ export class DesktopService extends ApiService {
   setSelectedDesktopBooking(desktop: Desktop) {
     this.selectedDesktopBookingBS.next(desktop);
   }
-  
 }

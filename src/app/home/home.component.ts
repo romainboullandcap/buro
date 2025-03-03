@@ -1,34 +1,29 @@
-import {
-  AfterContentChecked,
-  AfterViewInit,
-  Component,
-  inject,
-  signal,
-  ViewEncapsulation,
-} from "@angular/core";
+import { Component, inject } from "@angular/core";
 import { CommonModule } from "@angular/common";
-import { Desktop } from "../model/desktop";
 import { DesktopService } from "../service/desktop.service";
-import { MatSnackBar } from "@angular/material/snack-bar";
-import {
-  DateRange,
-  MatCalendarCellClassFunction,
-  MatDatepickerModule,
-} from "@angular/material/datepicker";
+import { MatDatepickerModule } from "@angular/material/datepicker";
 import { MatInputModule } from "@angular/material/input";
 import { MatFormFieldModule } from "@angular/material/form-field";
 
-import { FormsModule, ReactiveFormsModule } from "@angular/forms";
-import { DateAdapter, provideNativeDateAdapter } from "@angular/material/core";
+import {
+  FormBuilder,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators,
+} from "@angular/forms";
 import { MatCardModule } from "@angular/material/card";
-import { BookingService } from "../service/booking.service";
 import { MatButtonModule } from "@angular/material/button";
 import { MatIconModule } from "@angular/material/icon";
 import { FloorplanComponent } from "../floorplan/floorplan.component";
 import { MatSlideToggleModule } from "@angular/material/slide-toggle";
-import { CalendarComponent } from "../calendar/calendar.component";
 import { AgendaComponent } from "../agenda/agenda.component";
 import { toSignal } from "@angular/core/rxjs-interop";
+import { LoginService } from "../service/login.service";
+import { DateAdapter } from "@angular/material/core";
+import { MomentDateAdapter } from "@angular/material-moment-adapter";
+import { Moment } from "moment";
+import { DateTime } from "luxon";
 
 @Component({
   selector: "app-home",
@@ -44,38 +39,52 @@ import { toSignal } from "@angular/core/rxjs-interop";
     FloorplanComponent,
     MatSlideToggleModule,
     FormsModule,
-    CalendarComponent,
     AgendaComponent,
   ],
-  providers: [provideNativeDateAdapter()],
+  providers: [],
   templateUrl: `home.component.html`,
   styleUrls: ["./home.component.scss"],
 })
 export class HomeComponent {
   desktopService: DesktopService = inject(DesktopService);
+  loginService: LoginService = inject(LoginService);
+  dateAdapter = inject(DateAdapter<DateTime>);
+  formBuilder = inject(FormBuilder);
+
   desktopList = toSignal(this.desktopService.desktopList$);
 
-  _selectedDateCalendar!: Date;
-  public set selectedDateCalendar(date: Date) {
-    this._selectedDateCalendar = date;
-    console.log(
-      "[HOME] this._selectedDateCalendar",
-      this._selectedDateCalendar
-    );
-  }
-  public get selectedDateCalendar() {
-    return this._selectedDateCalendar;
-  }
+  dateSelectionForm = this.formBuilder.group({
+    selectedDateCalendar: [DateTime.now().startOf("day"), Validators.required],
+  });
+
   constructor() {
+    this.dateAdapter.setLocale("fr");
+    this.loginService.tryAuthWithToken();
     this.desktopService.loadAllDesktop();
-    this.selectedDateCalendar = new Date();
-    this.selectedDateCalendar.setHours(0);
-    this.selectedDateCalendar.setMinutes(0);
-    this.selectedDateCalendar.setSeconds(0);
-    this.selectedDateCalendar.setMilliseconds(0);
+    this.dateSelectionForm.controls.selectedDateCalendar.setValue(
+      DateTime.now().startOf("day")
+    );
   }
 
   loadData() {
     this.desktopService.loadAllDesktop();
+  }
+
+  onNextDayClick() {
+    this.addDays(1);
+  }
+
+  onPreviousDayClick() {
+    this.addDays(-1);
+  }
+
+  addDays(nbDays: number) {
+    if (this.dateSelectionForm.controls.selectedDateCalendar) {
+      var temp : DateTime = DateTime.fromJSDate(
+        this.dateSelectionForm.controls.selectedDateCalendar.value!.toJSDate()
+      );
+      temp = temp.plus({ days: nbDays });
+      this.dateSelectionForm.controls.selectedDateCalendar.setValue(temp);
+    }
   }
 }

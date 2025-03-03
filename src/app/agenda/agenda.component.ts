@@ -1,4 +1,4 @@
-import { Component, ViewEncapsulation, input } from "@angular/core";
+import { Component, ViewEncapsulation, inject, input } from "@angular/core";
 import { MatButtonModule } from "@angular/material/button";
 import {
   MatCalendarCellClassFunction,
@@ -9,6 +9,8 @@ import { MatCardModule } from "@angular/material/card";
 import { CommonModule } from "@angular/common";
 import { Booking } from "../model/booking";
 import { BookingTableComponent } from "../booking-table/booking-table.component";
+import { LoginService } from "../service/login.service";
+import { DateTime } from "luxon";
 
 @Component({
   selector: "app-agenda",
@@ -25,35 +27,23 @@ import { BookingTableComponent } from "../booking-table/booking-table.component"
 })
 export class AgendaComponent {
   desktopList = input<Desktop[] | undefined>([]);
+  loginService = inject(LoginService);
 
   constructor() {}
 
-  dateClass: MatCalendarCellClassFunction<Date> = (cellDate, view) => {
-    if (view === "month") {
-      return this.desktopList()?.some((desktop) =>
-        desktop.bookings.some((booking) => {
-          const date = new Date(booking.date);
-          return (
-            booking.email === localStorage.getItem("email") &&
-            date.toLocaleDateString() === cellDate.toLocaleDateString()
-          );
-        })
-      )
-        ? "booked-date"
-        : "";
-    }
-    return "";
-  };
-
-  getBookingSorted(): Booking[] {
+  getFutureBookingSorted(): Booking[] {
     const res = this.desktopList()!
-      .flatMap((desktop) => 
-        desktop.bookings
-          .filter((booking) => booking.email === localStorage.getItem("email")))
-      .filter((bookingMap) => bookingMap != null)
-      .sort(
-        (a, b) => new Date(a?.date!).getTime() - new Date(b?.date!).getTime()
-      );
+      .flatMap((desktop) =>
+        desktop.bookings.filter(
+          (booking) => booking.userId === this.loginService.currentUser()?.id
+        )
+      )
+      .filter(
+        (booking) =>
+          booking != null &&
+          booking.date.diff(DateTime.now().startOf("day")).toMillis() >= 0
+      )
+      .sort((a, b) => a.date.toMillis() - b.date.toMillis());
     return res;
   }
 }
