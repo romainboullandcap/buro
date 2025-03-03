@@ -3,7 +3,7 @@
     <div>
       <div class="flex align-center">
         <div>
-          <a [routerLink]="['/']"><h1>Buro</h1></a>
+          <a [routerLink]="['/']" class="title"><h1>Buro</h1></a>
           <span class="version">{{ version }}</span>
         </div>
         @if(localstorageService.hasToken() && this.desktopList &&

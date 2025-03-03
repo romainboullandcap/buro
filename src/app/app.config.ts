@@ -17,15 +17,11 @@ import {
   MAT_DATE_LOCALE,
   provideNativeDateAdapter,
 } from "@angular/material/core";
-import { registerLocaleData } from "@angular/common";
-
-import localeFrExtra from "@angular/common/locales/extra/fr";
 import { tokenInterceptor } from "./token.interceptor";
 import {
   MAT_DATE_RANGE_SELECTION_STRATEGY,
   DefaultMatCalendarRangeStrategy,
 } from "@angular/material/datepicker";
-import { provideMomentDateAdapter } from "@angular/material-moment-adapter";
 import { provideLuxonDateAdapter } from "@angular/material-luxon-adapter";
 
 export const MY_FORMATS = {

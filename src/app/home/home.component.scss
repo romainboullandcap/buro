@@ -35,11 +35,16 @@ span {
   justify-content: center;
 }
 
+
 mat-form-field {
   margin-left : 30px;
   margin-right : 30px;
-  font-size: 25px !important;
   width: 350px;
+}
+
+
+.mat-mdc-input-element {
+  font-size: 21px !important;
 }
 
 

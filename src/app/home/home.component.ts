@@ -21,8 +21,6 @@ import { AgendaComponent } from "../agenda/agenda.component";
 import { toSignal } from "@angular/core/rxjs-interop";
 import { LoginService } from "../service/login.service";
 import { DateAdapter } from "@angular/material/core";
-import { MomentDateAdapter } from "@angular/material-moment-adapter";
-import { Moment } from "moment";
 import { DateTime } from "luxon";
 
 @Component({
@@ -43,7 +41,7 @@ import { DateTime } from "luxon";
   ],
   providers: [],
   templateUrl: `home.component.html`,
-  styleUrls: ["./home.component.scss"],
+  styleUrls: ["./home.component.scss"]
 })
 export class HomeComponent {
   desktopService: DesktopService = inject(DesktopService);
