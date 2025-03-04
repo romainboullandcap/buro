@@ -6,10 +6,11 @@
       </button>
       <form [formGroup]="dateSelectionForm">
       <mat-form-field>      
-        <input
+        <input          
           matInput
           [matDatepicker]="picker"
           formControlName="selectedDateCalendar"
+          readonly 
         />
         <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
         <mat-datepicker #picker></mat-datepicker>
