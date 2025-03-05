@@ -1,9 +1,8 @@
 @if(bookingList().length>0){
-
-<div class="table">
+<div class="tableFixHead" [class.isDetailed]="isDesktopDetailMode()">
   <table>
-    <thead>
-      <tr class="table100-head">
+    <thead>      
+      <tr class="">
         <th class="column1">Date</th>
         @if(!isDesktopDetailMode()) {
         <th class="column2">Bureau</th>
@@ -15,30 +14,30 @@
     </thead>
     <tbody>
       @for(booking of bookingList(); track booking.id){
-      <tr>
-        <td class="column1">{{ booking.date.toJSDate() | date : "dd/MM/YYYY" }}</td>
-        @if(!isDesktopDetailMode()){
-        <td class="column2">{{ booking.desktopId }}</td>
-        } @else {
-        <td class="column2">{{ booking.user.email }}</td>
-
-        } @if(isDesktopDetailMode()) {
-        <td class="column3">
-          @if(bookingService.isMyBooking(booking)) {
-          <div class="delete-button" (click)="onDeleteClick(booking)">
-            <mat-icon>delete</mat-icon>
-          </div>
+        <tr>
+          <td class="column1">{{ booking.date.toJSDate() | date : "dd/MM/YYYY" }}</td>
+          @if(!isDesktopDetailMode()){
+          <td class="column2">{{ booking.desktopId }}</td>
+          } @else {
+          <td class="column2">{{ booking.user.email }}</td>
+  
+          } @if(isDesktopDetailMode()) {
+          <td class="column3">
+            @if(bookingService.isMyBooking(booking)) {
+            <div class="delete-button" (click)="onDeleteClick(booking)">
+              <mat-icon>delete</mat-icon>
+            </div>
+            }
+          </td>
           }
-        </td>
+        </tr>
+  
         }
-      </tr>
-
-      }
     </tbody>
   </table>
 </div>
 } @else {
-<div class="m1"></div>
-@if(customEmptyMessage()) {
-{{ customEmptyMessage() }}
-} @else { Aucune réservation } }
+  <div class="m1"></div>
+  @if(customEmptyMessage()) {
+  {{ customEmptyMessage() }}
+  } @else { Aucune réservation } }

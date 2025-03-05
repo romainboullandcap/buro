@@ -2,7 +2,7 @@
   
   @if(desktop()!.id > 0 && !isMultipleDateSelection) {
   <div class="detail m1 p1 flex card">
-    <span class="desktopTitle">Bureau {{ desktop()!.id }} : réservations du
+    <span class="desktopTitle">Bureau {{ desktop()!.id }} du
       {{ selectedDate()?.toJSDate()| date : "cccc dd/MM" | titlecase }}
       au
       {{ endSelectedDate()?.toJSDate() | date : "dd/MM" | titlecase }}</span>
@@ -17,7 +17,7 @@
   } @else if(desktop()!.id == -1) {
   <div class="p1 flex">
     <div class="start">
-      <div><h1>Cliquez sur un bureau pour voir ses réservations</h1></div>
+      <div>Cliquez sur un bureau pour voir ses réservations</div>
       <div><img src="assets/arrow.png" /></div>
     </div>
   </div>
