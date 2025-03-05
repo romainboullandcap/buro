@@ -87,7 +87,7 @@ html {
 :root {
   @include mat.datepicker-overrides((
     
-    calendar-date-selected-state-text-color: var(--color-error),
+    calendar-date-selected-state-text-color: #fff,
     
   ));
 }
