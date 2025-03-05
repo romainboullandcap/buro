@@ -54,7 +54,7 @@
         @if(isSaving()) {
         <mat-spinner></mat-spinner>
         } @else if(createdBookingList.length > 0) {
-        <h2>Réservation créée</h2>
+        <div class="resCreated">Réservation créée</div>
         <div class="m1 table">
           <app-booking-table
             [bookingList]="createdBookingList"

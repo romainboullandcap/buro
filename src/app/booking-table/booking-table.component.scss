@@ -19,7 +19,7 @@
 
 .tableFixHead          { 
   overflow-y: scroll;
-   height: 500px; 
+   max-height: 500px; 
    border-radius: 10px;
   width: 76%;
   overflow-x: hidden;
